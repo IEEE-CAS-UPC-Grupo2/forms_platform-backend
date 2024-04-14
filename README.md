@@ -5,6 +5,7 @@
 - Have Visual Studio 2022 IDE with .NET 7 support.
 
 ## In the Project:
-1. Clean the solution.
-2. Restore package nuggets.
-3. Rebuild the solution.
+1. Review the connection string 
+2. Clean the solution.
+3. Restore package nuggets.
+4. Rebuild the solution.
