@@ -19,6 +19,7 @@ public partial class BackendCasContext : DbContext
     public virtual DbSet<Administrator> Administrators { get; set; }
 
     public virtual DbSet<EventsCa> EventsCas { get; set; }
+    public virtual DbSet<HistorialRefreshToken> HistorialRefreshTokens { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
@@ -92,6 +93,26 @@ public partial class BackendCasContext : DbContext
                 .HasConstraintName("fk_id_administrator");
         });
 
+        modelBuilder.Entity<HistorialRefreshToken>(entity =>
+        {
+            entity.HasKey(e => e.IdHistorialToken).HasName("PK__Historia__03DC48A5E085D466");
+
+            entity.ToTable("HistorialRefreshToken");
+
+            entity.Property(e => e.EsActivo).HasComputedColumnSql("(case when [FechaExpiracion]<getdate() then CONVERT([bit],(0)) else CONVERT([bit],(1)) end)", false);
+            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
+            entity.Property(e => e.FechaExpiracion).HasColumnType("datetime");
+            entity.Property(e => e.RefreshToken)
+                .HasMaxLength(200)
+                .IsUnicode(false);
+            entity.Property(e => e.Token)
+                .HasMaxLength(500)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.HistorialRefreshTokens)
+                .HasForeignKey(d => d.IdUsuario)
+                .HasConstraintName("FK__Historial__IdUsu__49C3F6B7");
+        });
         OnModelCreatingPartial(modelBuilder);
     }
 

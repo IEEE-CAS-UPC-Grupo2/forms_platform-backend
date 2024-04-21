@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using BackendCas.BLL.Services.Contrat;
 using BackendCas.DTO;
 using BackendCas.Utils;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BackendCas.Controllers
 {
@@ -18,6 +19,7 @@ namespace BackendCas.Controllers
             _administratorService=administratorService;
         }
 
+        [Authorize]
         [HttpGet]
         [Route("List")]
         public async Task<IActionResult> List()
@@ -39,6 +41,7 @@ namespace BackendCas.Controllers
             return Ok(rsp);
         }
 
+        [Authorize]
         [HttpPost]
         [Route("Save")]
         public async Task<IActionResult> Save([FromBody] AdministratorDTO producto)
@@ -58,6 +61,7 @@ namespace BackendCas.Controllers
 
             return Ok(rsp);
         }
+        [Authorize]
         [HttpPut]
         [Route("Edit")]
         public async Task<IActionResult> Edit([FromBody] AdministratorDTO producto)
@@ -77,6 +81,7 @@ namespace BackendCas.Controllers
 
             return Ok(rsp);
         }
+        [Authorize]
         [HttpDelete]
         [Route("Delete/{id:int}")]
         public async Task<IActionResult> Delete(int id)
