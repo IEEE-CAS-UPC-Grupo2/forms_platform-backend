@@ -33,7 +33,7 @@ namespace BackendCas.IOC
             services.AddScoped<IAdministratorService, AdministratorService>();
             services.AddScoped<IAutorizacionService,AuthorizationService>();
             services.AddScoped<IEventsCa, EventsCaService>();
-
+            services.AddScoped<IParticipantService, ParticipantService>();
         }
     }
 }

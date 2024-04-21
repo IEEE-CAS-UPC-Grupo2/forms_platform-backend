@@ -15,7 +15,7 @@ namespace BackendCas.UTILITY
         {
             CreateMap<Administrator,AdministratorDTO>().ReverseMap();
             CreateMap<EventsCa,EventsCaDTO>().ReverseMap();
-        
+            CreateMap<Participant,ParticipantDTO>().ReverseMap();
         }
     }
 }

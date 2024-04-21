@@ -19,6 +19,8 @@ public partial class BackendCasContext : DbContext
     public virtual DbSet<Administrator> Administrators { get; set; }
 
     public virtual DbSet<EventsCa> EventsCas { get; set; }
+    
+    public virtual DbSet<Participant> Participants { get; set; }
     public virtual DbSet<HistorialRefreshToken> HistorialRefreshTokens { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
@@ -91,6 +93,39 @@ public partial class BackendCasContext : DbContext
             entity.HasOne(d => d.IdAdministratorNavigation).WithMany(p => p.EventsCas)
                 .HasForeignKey(d => d.IdAdministrator)
                 .HasConstraintName("fk_id_administrator");
+        });
+
+        modelBuilder.Entity<Participant>(entity =>
+        {
+            entity.HasKey(e => e.IdParticipant).HasName("PK__Particip__D4A1A8D9A3A3D3A4");
+
+            entity.ToTable("participants");
+
+            entity.Property(e => e.IdParticipant).HasColumnName("id_participant");
+            entity.Property(e => e.Dni)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("dni");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("name");
+            entity.Property(e => e.Email)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("email");
+            entity.Property(e => e.StudyCenter)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("study_center");
+            entity.Property(e => e.Career)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("career");
+            entity.Property(e => e.IeeeMembershipCode)
+                .HasMaxLength(255)
+                .IsUnicode(false)
+                .HasColumnName("ieee_membership_code");
         });
 
         modelBuilder.Entity<HistorialRefreshToken>(entity =>
