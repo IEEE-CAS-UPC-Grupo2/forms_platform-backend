@@ -34,6 +34,7 @@ namespace BackendCas.IOC
             services.AddScoped<IAutorizacionService,AuthorizationService>();
             services.AddScoped<IEventsCa, EventsCaService>();
             services.AddScoped<IParticipantService, ParticipantService>();
+            services.AddScoped<IAttendanceService, AttendanceService>();
         }
     }
 }

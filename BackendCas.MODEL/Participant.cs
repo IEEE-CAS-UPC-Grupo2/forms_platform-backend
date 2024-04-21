@@ -16,4 +16,6 @@ public partial class Participant
     
     public string? IeeeMembershipCode { get; set; }
     
+    public virtual ICollection<Attendance> Attendances { get; } = new List<Attendance>();
+    
 }

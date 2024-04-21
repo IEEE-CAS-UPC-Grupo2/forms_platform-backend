@@ -21,6 +21,8 @@ public partial class BackendCasContext : DbContext
     public virtual DbSet<EventsCa> EventsCas { get; set; }
     
     public virtual DbSet<Participant> Participants { get; set; }
+    
+    public virtual DbSet<Attendance> Attendances { get; set; }
     public virtual DbSet<HistorialRefreshToken> HistorialRefreshTokens { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
@@ -126,6 +128,25 @@ public partial class BackendCasContext : DbContext
                 .HasMaxLength(255)
                 .IsUnicode(false)
                 .HasColumnName("ieee_membership_code");
+        });
+
+        modelBuilder.Entity<Attendance>(entity =>
+        {
+            entity.HasKey(e => e.IdAttendance).HasName("PK__Attendan__F3A3A3A3A3A3A3A3");
+            
+            entity.ToTable("attendances");
+            
+            entity.Property(e => e.IdAttendance).HasColumnName("id_attendance");
+            entity.Property(e => e.IdParticipant).HasColumnName("id_participant");
+            entity.Property(e => e.IdEvent).HasColumnName("id_event");
+            entity.HasOne(e => e.IdParticipantNavigation).WithMany(e => e.Attendances)
+                .HasForeignKey(e => e.IdParticipant)
+                .HasConstraintName("fk_id_participant");
+            entity.HasOne(e => e.IdEventNavigation).WithMany(e => e.Attendances)
+                .HasForeignKey(e => e.IdEvent)
+                .HasConstraintName("fk_id_event");
+            entity.Property(e => e.Dni).HasColumnName("dni");
+            entity.Property(e => e.Email).HasColumnName("email");
         });
 
         modelBuilder.Entity<HistorialRefreshToken>(entity =>
