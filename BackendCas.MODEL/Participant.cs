@@ -18,4 +18,5 @@ public partial class Participant
     
     public virtual ICollection<Attendance> Attendances { get; } = new List<Attendance>();
     
+    public virtual ICollection<Certificate> Certificates { get; } = new List<Certificate>();
 }

@@ -32,4 +32,6 @@ public partial class EventsCa
     public virtual Administrator? IdAdministratorNavigation { get; set; }
     
     public virtual ICollection<Attendance> Attendances { get; } = new List<Attendance>();
+    
+    public virtual ICollection<Certificate> Certificates { get; } = new List<Certificate>();
 }

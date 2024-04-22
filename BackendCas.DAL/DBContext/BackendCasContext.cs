@@ -23,6 +23,9 @@ public partial class BackendCasContext : DbContext
     public virtual DbSet<Participant> Participants { get; set; }
     
     public virtual DbSet<Attendance> Attendances { get; set; }
+    
+    public virtual DbSet<Certificate> Certificates { get; set; }
+    
     public virtual DbSet<HistorialRefreshToken> HistorialRefreshTokens { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
@@ -147,6 +150,24 @@ public partial class BackendCasContext : DbContext
                 .HasConstraintName("fk_id_event");
             entity.Property(e => e.Dni).HasColumnName("dni");
             entity.Property(e => e.Email).HasColumnName("email");
+        });
+        
+        modelBuilder.Entity<Certificate>(entity =>
+        {
+            entity.HasKey(e => e.IdCertificate).HasName("PK__Certific__D4A1A8D9A3A3D3A4");
+
+            entity.ToTable("certificates");
+
+            entity.Property(e => e.IdCertificate).HasColumnName("id_certificate");
+            entity.Property(e => e.IdParticipant).HasColumnName("id_participant");
+            entity.Property(e => e.IdEvent).HasColumnName("id_event");
+            entity.HasOne(e => e.IdParticipantNavigation).WithMany(e => e.Certificates)
+                .HasForeignKey(e => e.IdParticipant)
+                .HasConstraintName("fk_id_participant");
+            entity.HasOne(e => e.IdEventNavigation).WithMany(e => e.Certificates)
+                .HasForeignKey(e => e.IdEvent)
+                .HasConstraintName("fk_id_event");
+            entity.Property(e => e.IsDelivered).HasColumnName("is_delivered");
         });
 
         modelBuilder.Entity<HistorialRefreshToken>(entity =>
