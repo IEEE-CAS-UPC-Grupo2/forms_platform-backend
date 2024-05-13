@@ -14,4 +14,6 @@ public partial class Administrator
     public string? PasswordAdministrator { get; set; }
 
     public virtual ICollection<EventsCa> EventsCas { get; } = new List<EventsCa>();
+
+    public virtual ICollection<HistorialRefreshToken> HistorialRefreshTokens { get; } = new List<HistorialRefreshToken>();
 }

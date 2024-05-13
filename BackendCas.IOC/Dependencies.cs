@@ -31,6 +31,7 @@ namespace BackendCas.IOC
             services.AddAutoMapper(typeof(AutoMapperProfile));
 
             services.AddScoped<IAdministratorService, AdministratorService>();
+            services.AddScoped<IAutorizacionService,AuthorizationService>();
             services.AddScoped<IEventsCa, EventsCaService>();
 
         }

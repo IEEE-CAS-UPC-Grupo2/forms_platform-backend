@@ -5,6 +5,7 @@ using BackendCas.BLL.Services.Contrat;
 using BackendCas.DTO;
 using BackendCas.Utils;
 using BackendCas.MODEL;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BackendCas.Controllers
 {
@@ -19,6 +20,7 @@ namespace BackendCas.Controllers
             _eventsCa=eventsCa;
         }
 
+        [Authorize]
         [HttpGet]
         [Route("List")]
         public async Task<IActionResult> List()
@@ -40,6 +42,7 @@ namespace BackendCas.Controllers
             return Ok(rsp);
         }
 
+        [Authorize]
         [HttpPost]
         [Route("Save")]
         public async Task<IActionResult> Save([FromBody] EventsCaDTO producto)
@@ -59,6 +62,7 @@ namespace BackendCas.Controllers
 
             return Ok(rsp);
         }
+        [Authorize]
         [HttpPut]
         [Route("Edit")]
         public async Task<IActionResult> Edit([FromBody] EventsCaDTO producto)
@@ -78,6 +82,7 @@ namespace BackendCas.Controllers
 
             return Ok(rsp);
         }
+        [Authorize]
         [HttpDelete]
         [Route("Delete/{id:int}")]
         public async Task<IActionResult> Delete(int id)
