@@ -49,5 +49,78 @@ public class AttendanceService : IAttendanceService
             Console.WriteLine(e);
             throw;
         }
-    }   
+    }
+    
+    async Task<AttendanceDTO> IAttendanceService.GetById(int id)
+    {
+        try
+        {
+            var attendance = await _AttendanceRepository.Obtain(a => a.IdAttendance == id);
+            if (attendance == null)
+            {
+                throw new KeyNotFoundException("Attendance not found");
+            }
+
+            return _mapper.Map<AttendanceDTO>(attendance);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    async Task<AttendanceDTO> IAttendanceService.Update(AttendanceDTO model)
+    {
+        try
+        {
+            var attendance = await _AttendanceRepository.Obtain(a => a.IdAttendance == model.IdAttendance);
+            if (attendance == null)
+            {
+                throw new KeyNotFoundException("Attendance not found");
+            }
+
+            // Map updated values to the existing entity
+            _mapper.Map(model, attendance);
+            var updated = await _AttendanceRepository.Edit(attendance);
+
+            if (!updated)
+            {
+                throw new Exception("Update failed");
+            }
+
+            return _mapper.Map<AttendanceDTO>(attendance);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    async Task<AttendanceDTO> IAttendanceService.Delete(AttendanceDTO model)
+    {
+        try
+        {
+            var attendance = await _AttendanceRepository.Obtain(a => a.IdAttendance == model.IdAttendance);
+            if (attendance == null)
+            {
+                throw new KeyNotFoundException("Attendance not found");
+            }
+
+            var deleted = await _AttendanceRepository.Delete(attendance);
+
+            if (!deleted)
+            {
+                throw new Exception("Delete failed");
+            }
+
+            return _mapper.Map<AttendanceDTO>(attendance);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }
