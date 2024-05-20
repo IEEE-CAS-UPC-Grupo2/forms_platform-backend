@@ -58,10 +58,36 @@ public class ParticipantController : ControllerBase
         }
         return Ok(rsp);
     }
+
+    [Authorize]
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var rsp = new Response<ParticipantDTO>();
+        try
+        {
+            var participant = await _participantService.GetById(id);
+            if (participant == null)
+            {
+                rsp.status = false;
+                rsp.msg = "Participant not found";
+            }
+            else
+            {
+                rsp.status = true;
+                rsp.Value = participant;
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            throw;
+        }
+        return Ok(rsp);
+    }
     
     [Authorize]
-    [HttpPut]
-    [Route("Edit")]
+    [HttpPut("{id}")]
     public async Task<IActionResult> Edit([FromBody] ParticipantDTO participant)
     {
         var rsp = new Response<bool>();
@@ -80,8 +106,7 @@ public class ParticipantController : ControllerBase
     }
     
     [Authorize]
-    [HttpDelete]
-    [Route("Delete")]
+    [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
         var rsp = new Response<bool>();

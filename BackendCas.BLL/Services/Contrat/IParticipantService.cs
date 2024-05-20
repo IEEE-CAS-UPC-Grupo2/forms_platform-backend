@@ -11,4 +11,6 @@ public interface IParticipantService
     Task<bool> Edit(ParticipantDTO model);
     
     Task<bool> Delete(int id);
+    
+    Task<ParticipantDTO> GetById(int id);
 }

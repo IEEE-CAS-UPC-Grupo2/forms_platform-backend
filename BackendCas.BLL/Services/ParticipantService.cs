@@ -50,6 +50,25 @@ public class ParticipantService: IParticipantService
         }
     }
 
+    async Task<ParticipantDTO> IParticipantService.GetById(int id)
+    {
+        try
+        {
+            var participant = await _ParticipantRepository.Obtain(p => p.IdParticipant == id);
+            if (participant == null)
+            {
+                throw new TaskCanceledException("The participant doesn't exist");
+            }
+
+            return _mapper.Map<ParticipantDTO>(participant);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
     async Task<bool> IParticipantService.Edit(ParticipantDTO model)
     {
         try
