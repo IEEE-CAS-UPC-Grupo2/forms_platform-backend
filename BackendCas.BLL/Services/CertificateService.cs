@@ -50,4 +50,76 @@ public class CertificateService : ICertificateService
             throw;
         }
     }
+
+    async Task<CertificateDTO> ICertificateService.GetById(int id)
+    {
+        try
+        {
+            var certificate = await _CertificateRepository.Obtain(c => c.IdCertificate == id);
+            if (certificate == null)
+            {
+                throw new KeyNotFoundException("The certificate doesn't exist");
+            }
+
+            return _mapper.Map<CertificateDTO>(certificate);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    async Task<CertificateDTO> ICertificateService.Update(CertificateDTO model)
+    {
+        try
+        {
+            var certificate = await _CertificateRepository.Obtain(c => c.IdCertificate == model.IdCertificate);
+            if (certificate == null)
+            {
+                throw new TaskCanceledException("The certificate doesn't exist");
+            }
+            
+            _mapper.Map(model, certificate);
+            var certificateUpdated = await _CertificateRepository.Edit(certificate);
+
+            if (!certificateUpdated)
+            {
+                throw new Exception("Update failed");
+            }
+            
+            return _mapper.Map<CertificateDTO>(certificate);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    async Task<CertificateDTO> ICertificateService.Delete(CertificateDTO model)
+    {
+        try
+        {
+            var certificate = await _CertificateRepository.Obtain(c => c.IdCertificate == model.IdCertificate);
+            if (certificate == null)
+            {
+                throw new TaskCanceledException("The certificate doesn't exist");
+            }
+            
+            var certificateDeleted = await _CertificateRepository.Delete(certificate);
+
+            if (!certificateDeleted)
+            {
+                throw new Exception("Delete failed");
+            }
+            
+            return _mapper.Map<CertificateDTO>(certificate);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }   
 }
