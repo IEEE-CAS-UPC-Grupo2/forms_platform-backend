@@ -16,7 +16,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.InyectionDependencies(builder.Configuration);
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("NewRule", app => { app.AllowAnyHeader().AllowAnyMethod(); });
+    options.AddPolicy("NewRule", app =>
+    {
+        app.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
+    });
 });
 
 var key = builder.Configuration.GetValue<string>("JwtSettings:key");

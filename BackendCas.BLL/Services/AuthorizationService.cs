@@ -102,7 +102,7 @@ namespace BackendCas.BLL.Services
         public async Task<AuthorizationResponse> ObtainToken(AuthorizationRequest authorization)
         {
             var usuario_encontrado = _context.Administrators.FirstOrDefault(x =>
-                           x.NameAdministrator == authorization.NombreUsuario &&
+                           x.EmailAdministrator == authorization.Email &&
                            x.PasswordAdministrator == authorization.Clave
                        );
 

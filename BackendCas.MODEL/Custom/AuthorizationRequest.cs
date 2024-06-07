@@ -8,7 +8,7 @@ namespace BackendCas.MODEL.Custom
 {
     public class AuthorizationRequest
     {
-        public string NombreUsuario { get; set; }
+        public string Email { get; set; }
         public string Clave { get; set; }
     }
 }
