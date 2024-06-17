@@ -10,6 +10,8 @@ namespace BackendCas.BLL.Services.Contrat
     public interface IEventsCa
     {
         Task<List<EventsCaDTO>> List();
+        
+        Task<EventsCaDTO> GetById(int id);
 
         Task<EventsCaDTO> Create(EventsCaDTO model);
 
