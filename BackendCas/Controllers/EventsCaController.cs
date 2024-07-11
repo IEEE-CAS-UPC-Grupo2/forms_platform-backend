@@ -42,6 +42,38 @@ namespace BackendCas.Controllers
 
             return Ok(rsp);
         }
+        
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var rsp = new Response<EventsCaDTO>();
+
+            try
+            {
+                var eventCa = await _eventsCa.GetById(id);
+                if (eventCa == null)
+                {
+                    rsp.status=false;
+                    rsp.msg="The event doesn't exist";
+                    return NotFound(rsp);
+                }
+                else
+                {
+                    rsp.status=true;
+                    rsp.Value=eventCa;
+                    return Ok(rsp);
+                }
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+
+        }
 
         [Authorize]
         [HttpGet("{id}")]
