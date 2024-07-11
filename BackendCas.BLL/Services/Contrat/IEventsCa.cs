@@ -19,7 +19,6 @@ namespace BackendCas.BLL.Services.Contrat
 
         Task<bool> Delete(int id);
 
-        Task<EventsCaDTO> GetById(int id);
 
     }
 }

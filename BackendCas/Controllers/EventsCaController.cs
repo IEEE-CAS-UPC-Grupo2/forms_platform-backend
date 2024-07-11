@@ -75,35 +75,7 @@ namespace BackendCas.Controllers
 
         }
 
-        [Authorize]
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            var rsp = new Response<EventsCaDTO>();
-            try
-            {
-                var events = await _eventsCa.GetById(id);
-                if (events == null)
-                {
-                    rsp.status = false;
-                    rsp.msg = "The certificate doesn't exist";
-                    return NotFound(rsp);
-                }
-                else
-                {
-                    rsp.status = true;
-                    rsp.Value = events;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                throw;
-            }
-
-            return Ok(rsp);
-        }
-
+    
 
         [Authorize]
         [HttpPost]
