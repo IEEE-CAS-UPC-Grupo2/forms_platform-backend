@@ -16,5 +16,8 @@ namespace BackendCas.BLL.Services.Contrat
         Task<bool> Edit(EventsCaDTO model);
 
         Task<bool> Delete(int id);
+
+        Task<EventsCaDTO> GetById(int id);
+
     }
 }

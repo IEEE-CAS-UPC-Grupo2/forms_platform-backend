@@ -40,6 +40,24 @@ namespace BackendCas.BLL.Services
                 throw;
             }
         }
+        async Task<EventsCaDTO> IEventsCa.GetById(int id)
+        {
+            try
+            {
+                var events = await _EventRepository.Obtain(c => c.IdEvent == id);
+                if (events == null)
+                {
+                    throw new KeyNotFoundException("The event doesn't exist");
+                }
+
+                return _mapper.Map<EventsCaDTO>(events);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
         async Task<EventsCaDTO> IEventsCa.Create(BackendCas.DTO.EventsCaDTO modelo)
         {
             try
