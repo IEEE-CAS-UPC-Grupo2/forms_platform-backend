@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackendCas.MODEL.Custom
+namespace BackendCas.MODEL.Custom;
+
+public class AuthorizationRequest
 {
-    public class AuthorizationRequest
-    {
-        public string NombreUsuario { get; set; }
-        public string Clave { get; set; }
-    }
+    public string NombreUsuario { get; set; }
+    public string Clave { get; set; }
 }

@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BackendCas.MODEL.Custom
+namespace BackendCas.MODEL.Custom;
+
+public class RefreshTokenRequest
 {
-    public class RefreshTokenRequest
-    {
-        public string TokenExpirado { get; set; }
-        public string RefreshToken { get; set; }
-    }
+    public string TokenExpirado { get; set; }
+    public string RefreshToken { get; set; }
 }

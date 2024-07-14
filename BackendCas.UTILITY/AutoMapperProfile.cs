@@ -7,15 +7,13 @@ using AutoMapper;
 using BackendCas.DTO;
 using BackendCas.MODEL;
 
-namespace BackendCas.UTILITY
+namespace BackendCas.UTILITY;
+
+public class AutoMapperProfile : Profile
 {
-    public class AutoMapperProfile  :Profile
+    public AutoMapperProfile()
     {
-        public AutoMapperProfile() 
-        {
-            CreateMap<Administrator,AdministratorDTO>().ReverseMap();
-            CreateMap<EventsCa,EventsCaDTO>().ReverseMap();
-        
-        }
+        CreateMap<Administrator, AdministratorDTO>().ReverseMap();
+        CreateMap<EventsCa, EventsCaDTO>().ReverseMap();
     }
 }

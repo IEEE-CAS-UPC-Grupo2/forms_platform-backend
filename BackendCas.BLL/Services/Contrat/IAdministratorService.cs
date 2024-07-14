@@ -5,20 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using BackendCas.DTO;
 
-namespace BackendCas.BLL.Services.Contrat
+namespace BackendCas.BLL.Services.Contrat;
+
+public interface IAdministratorService
 {
-    public interface IAdministratorService
-    {
+    Task<List<AdministratorDTO>> List();
 
-        Task<List<AdministratorDTO>> List();
+    Task<AdministratorDTO> Create(AdministratorDTO model);
 
-        Task<AdministratorDTO> Create(AdministratorDTO model);
+    Task<bool> Edit(AdministratorDTO model);
 
-        Task<bool> Edit(AdministratorDTO model);
-
-        Task<bool> Delete(int id);
-
-
-
-    }
+    Task<bool> Delete(int id);
 }

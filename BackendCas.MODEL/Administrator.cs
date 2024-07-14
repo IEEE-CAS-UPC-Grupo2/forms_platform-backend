@@ -15,5 +15,6 @@ public partial class Administrator
 
     public virtual ICollection<EventsCa> EventsCas { get; } = new List<EventsCa>();
 
-    public virtual ICollection<HistorialRefreshToken> HistorialRefreshTokens { get; } = new List<HistorialRefreshToken>();
+    public virtual ICollection<HistorialRefreshToken> HistorialRefreshTokens { get; } =
+        new List<HistorialRefreshToken>();
 }

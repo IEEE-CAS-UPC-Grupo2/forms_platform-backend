@@ -1,105 +1,105 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
 using BackendCas.BLL.Services.Contrat;
 using BackendCas.DTO;
 using BackendCas.Utils;
 using Microsoft.AspNetCore.Authorization;
 
-namespace BackendCas.Controllers
+namespace BackendCas.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class AdministratorController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AdministratorController : ControllerBase
+    private readonly IAdministratorService _administratorService;
+
+    public AdministratorController(IAdministratorService administratorService)
     {
-        private readonly IAdministratorService _administratorService;
+        _administratorService = administratorService;
+    }
 
-        public AdministratorController(IAdministratorService administratorService)
+    [Authorize]
+    [HttpGet]
+    [Route("List")]
+    public async Task<IActionResult> List()
+    {
+        var rsp = new Response<List<AdministratorDTO>>();
+
+        try
         {
-            _administratorService=administratorService;
+            rsp.status = true;
+            rsp.Value = await _administratorService.List();
+        }
+        catch (Exception ex)
+        {
+            rsp.status = false;
+
+            rsp.msg = ex.Message;
         }
 
-        [Authorize]
-        [HttpGet]
-        [Route("List")]
-        public async Task<IActionResult> List()
+        return Ok(rsp);
+    }
+
+    [Authorize]
+    [HttpPost]
+    [Route("Save")]
+    public async Task<IActionResult> Save([FromBody] AdministratorDTO producto)
+    {
+        var rsp = new Response<AdministratorDTO>();
+        try
         {
-            var rsp = new Response<List<AdministratorDTO>>();
+            rsp.status = true;
+            rsp.Value = await _administratorService.Create(producto);
+        }
+        catch (Exception ex)
+        {
+            rsp.status = false;
 
-            try
-            {
-                rsp.status=true;
-                rsp.Value=await _administratorService.List();
-            }
-            catch (Exception ex)
-            {
-                rsp.status=false;
-
-                rsp.msg=ex.Message;
-            }
-
-            return Ok(rsp);
+            rsp.msg = ex.Message;
         }
 
-        [Authorize]
-        [HttpPost]
-        [Route("Save")]
-        public async Task<IActionResult> Save([FromBody] AdministratorDTO producto)
+        return Ok(rsp);
+    }
+
+    [Authorize]
+    [HttpPut]
+    [Route("Edit")]
+    public async Task<IActionResult> Edit([FromBody] AdministratorDTO producto)
+    {
+        var rsp = new Response<bool>();
+        try
         {
-            var rsp = new Response<AdministratorDTO>();
-            try
-            {
-                rsp.status=true;
-                rsp.Value=await _administratorService.Create(producto);
-            }
-            catch (Exception ex)
-            {
-                rsp.status=false;
-
-                rsp.msg=ex.Message;
-            }
-
-            return Ok(rsp);
+            rsp.status = true;
+            rsp.Value = await _administratorService.Edit(producto);
         }
-        [Authorize]
-        [HttpPut]
-        [Route("Edit")]
-        public async Task<IActionResult> Edit([FromBody] AdministratorDTO producto)
+        catch (Exception ex)
         {
-            var rsp = new Response<bool>();
-            try
-            {
-                rsp.status=true;
-                rsp.Value=await _administratorService.Edit(producto);
-            }
-            catch (Exception ex)
-            {
-                rsp.status=false;
+            rsp.status = false;
 
-                rsp.msg=ex.Message;
-            }
-
-            return Ok(rsp);
+            rsp.msg = ex.Message;
         }
-        [Authorize]
-        [HttpDelete]
-        [Route("Delete/{id:int}")]
-        public async Task<IActionResult> Delete(int id)
+
+        return Ok(rsp);
+    }
+
+    [Authorize]
+    [HttpDelete]
+    [Route("Delete/{id:int}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var rsp = new Response<bool>();
+        try
         {
-            var rsp = new Response<bool>();
-            try
-            {
-                rsp.status=true;
-                rsp.Value=await _administratorService.Delete(id);
-            }
-            catch (Exception ex)
-            {
-                rsp.status=false;
-
-                rsp.msg=ex.Message;
-            }
-
-            return Ok(rsp);
+            rsp.status = true;
+            rsp.Value = await _administratorService.Delete(id);
         }
+        catch (Exception ex)
+        {
+            rsp.status = false;
+
+            rsp.msg = ex.Message;
+        }
+
+        return Ok(rsp);
     }
 }
