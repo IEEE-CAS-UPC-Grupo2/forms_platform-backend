@@ -74,8 +74,28 @@ public class EventsCaController : ControllerBase
 
         }
 
-    
 
+    /// <summary>
+    /// Guarda un nuevo evento.
+    /// </summary>
+    /// <remarks>
+    /// Ejemplo de solicitud:
+    /// 
+    ///     POST /Save
+    ///     {
+    ///        "Id": 1,
+    ///        "EventName": "Nombre del Evento",
+    ///        "EventDateTime": "2024/07/13 12:00:00",
+    ///        "Location": "Lugar del evento",
+    ///        "Description": "Descripción del evento"
+    ///     }
+    /// 
+    /// </remarks>
+    /// <param name="producto">El objeto EventsCaDTO que contiene los datos del evento a guardar.</param>
+    /// <returns>Un objeto IActionResult que contiene la respuesta de la solicitud.</returns>
+    /// <response code="200">Devuelve el objeto EventsCaDTO creado.</response>
+    /// <response code="400">Si el objeto es nulo o los datos no son válidos.</response>
+    /// <response code="500">Si ocurre un error interno.</response>
     [Authorize]
     [HttpPost]
     [Route("Save")]
@@ -90,12 +110,12 @@ public class EventsCaController : ControllerBase
         catch (Exception ex)
         {
             rsp.status = false;
-
             rsp.msg = ex.Message;
         }
 
         return Ok(rsp);
     }
+
 
     [Authorize]
     [HttpPut]
