@@ -3,9 +3,7 @@ using AutoMapper;
 using BackendCas.DTO;
 using BackendCas.MODEL;
 
-namespace BackendCas.UTILITY;
-
-public class AutoMapperProfile : Profile
+namespace BackendCas.UTILITY
 {
     public class AutoMapperProfile : Profile
     {

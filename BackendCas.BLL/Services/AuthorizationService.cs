@@ -38,7 +38,7 @@ public class AuthorizationService : IAutorizacionService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = claims,
-            Expires = now.AddMinutes(1),
+            Expires = now.AddMinutes(30),
             NotBefore = now,
             IssuedAt = now,
             SigningCredentials = credencialesToken

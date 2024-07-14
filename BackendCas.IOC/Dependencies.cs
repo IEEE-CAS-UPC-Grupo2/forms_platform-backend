@@ -13,7 +13,10 @@ using BackendCas.UTILITY;
 using BackendCas.BLL.Services.Contrat;
 using BackendCas.BLL.Services;
 
-namespace BackendCas.IOC;
+namespace BackendCas.IOC
+{
+
+
 
 public static class Dependencies
 {
