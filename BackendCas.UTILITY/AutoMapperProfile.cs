@@ -21,15 +21,14 @@ namespace BackendCas.UTILITY
             CreateMap<Certificate, CertificateDTO>().ReverseMap();
         }
 
-        private DateTime? ParseDateTime(DateTime? dateTimeString)
+        private DateTime? ParseDateTime(string dateTimeString)
         {
-            string auxdatetime = Convert.ToString(dateTimeString);
-            if (string.IsNullOrEmpty(auxdatetime))
+            if (string.IsNullOrEmpty(dateTimeString))
             {
                 return null;
             }
 
-            if (DateTime.TryParseExact(auxdatetime, "yyyy/MM/dd HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out DateTime parsedDateTime))
+            if (DateTime.TryParseExact(dateTimeString, "yyyy/MM/dd HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out DateTime parsedDateTime))
             {
                 return parsedDateTime;
             }

@@ -21,7 +21,7 @@ namespace BackendCas.Controllers
             _eventsCa=eventsCa;
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpGet]
         [Route("List")]
         public async Task<IActionResult> List()
@@ -43,7 +43,7 @@ namespace BackendCas.Controllers
             return Ok(rsp);
         }
         
-        [Authorize]
+        //[Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {

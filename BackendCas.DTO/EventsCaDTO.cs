@@ -26,7 +26,7 @@ namespace BackendCas.DTO
 
         public string? Speaker { get; set; }
 
-        public DateTime? EventDateTime { get; set; }
+        public string? EventDateTime { get; set; } // Mantener como string
 
         public int? EventDuration { get; set; }
 

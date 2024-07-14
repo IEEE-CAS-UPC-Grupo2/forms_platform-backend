@@ -6,12 +6,9 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 
 builder.Services.InyectionDependencies(builder.Configuration);
 builder.Services.AddCors(options =>
@@ -22,7 +19,15 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Retrieve the JWT key from configuration
 var key = builder.Configuration.GetValue<string>("JwtSettings:key");
+
+// Ensure the key is at least 256 bits (32 bytes)
+if (string.IsNullOrEmpty(key) || Encoding.ASCII.GetBytes(key).Length < 32)
+{
+    throw new ArgumentException("La clave JWT debe tener al menos 256 bits (32 bytes).");
+}
+
 var keyBytes = Encoding.ASCII.GetBytes(key);
 
 builder.Services.AddAuthentication(config =>
@@ -35,18 +40,14 @@ builder.Services.AddAuthentication(config =>
     config.SaveToken = true;
     config.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuerSigningKey= true,
+        ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
         ValidateIssuer = false,
         ValidateAudience = false,
         ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero
+        ClockSkew = TimeSpan.Zero // Elimina el tiempo de gracia predeterminado de 5 minutos
     };
 });
-
-
-
-
 
 var app = builder.Build();
 
@@ -58,10 +59,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseCors("NewRule");
-
-app.UseAuthorization();
 
 app.MapControllers();
 
