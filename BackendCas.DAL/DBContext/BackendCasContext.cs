@@ -28,7 +28,9 @@ public partial class BackendCasContext : DbContext
     
     public virtual DbSet<HistorialRefreshToken> HistorialRefreshTokens { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -176,7 +178,8 @@ public partial class BackendCasContext : DbContext
 
             entity.ToTable("HistorialRefreshToken");
 
-            entity.Property(e => e.EsActivo).HasComputedColumnSql("(case when [FechaExpiracion]<getdate() then CONVERT([bit],(0)) else CONVERT([bit],(1)) end)", false);
+            entity.Property(e => e.EsActivo).HasComputedColumnSql(
+                "(case when [FechaExpiracion]<getdate() then CONVERT([bit],(0)) else CONVERT([bit],(1)) end)", false);
             entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
             entity.Property(e => e.FechaExpiracion).HasColumnType("datetime");
             entity.Property(e => e.RefreshToken)

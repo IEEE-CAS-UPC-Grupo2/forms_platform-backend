@@ -49,6 +49,10 @@ builder.Services.AddAuthentication(config =>
     };
 });
 
+
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

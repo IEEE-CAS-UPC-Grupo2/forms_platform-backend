@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using BackendCas.BLL.Services.Contrat;
@@ -12,24 +11,24 @@ using BackendCas.DTO;
 using BackendCas.MODEL;
 
 
-namespace BackendCas.BLL.Services
+namespace BackendCas.BLL.Services;
+
+public class EventsCaService : IEventsCa
 {
-    public class EventsCaService :IEventsCa
+    private readonly IGenericRepository<EventsCa> _EventRepository;
+    private readonly IMapper _mapper;
+
+    public EventsCaService(IGenericRepository<EventsCa> eventrepository, IMapper mapper)
     {
-        private readonly IGenericRepository<EventsCa> _EventRepository;
-        private readonly IMapper _mapper;
+        _EventRepository = eventrepository;
+        _mapper = mapper;
+    }
 
-        public EventsCaService(IGenericRepository<EventsCa> eventrepository, IMapper mapper)
+    async Task<List<EventsCaDTO>> IEventsCa.List()
+    {
+        try
         {
-            _EventRepository=eventrepository;
-            _mapper=mapper;
-        }
-
-        async Task<List<EventsCaDTO>> IEventsCa.List()
-        {
-            try
-            {
-                var listaCategorias = await _EventRepository.Find();
+            var listaCategorias = await _EventRepository.Find();
 
 
                 return _mapper.Map<List<EventsCaDTO>>(listaCategorias.ToList());
@@ -77,76 +76,54 @@ namespace BackendCas.BLL.Services
             }
         }
 
-        async Task<bool> IEventsCa.Edit(BackendCas.DTO.EventsCaDTO modelo)
+    async Task<bool> IEventsCa.Edit(EventsCaDTO modelo)
+    {
+        try
         {
-            try
-            {
-                var EventModel = _mapper.Map<EventsCa>(modelo);
+            var EventModel = _mapper.Map<EventsCa>(modelo);
 
-                var EventFind = await _EventRepository.Obtain(u => u.IdEvent==EventModel.IdEvent);
-                if (EventFind==null)
-                {
-                    throw new TaskCanceledException("The event doesn't exist");
+            var EventFind = await _EventRepository.Obtain(u => u.IdEvent == EventModel.IdEvent);
+            if (EventFind == null) throw new TaskCanceledException("The event doesn't exist");
+            EventFind.EventTitle = EventModel.EventTitle;
+            EventFind.EventDescription = EventModel.EventDescription;
+            EventFind.ImageUrl = EventModel.ImageUrl;
+            EventFind.Modality = EventModel.Modality;
+            EventFind.InstitutionInCharge = EventModel.InstitutionInCharge;
+            EventFind.Vacancy = EventModel.Vacancy;
+            EventFind.AddressEvent = EventModel.AddressEvent;
+            EventFind.Speaker = EventModel.Speaker;
+            EventFind.EventDateTime = EventModel.EventDateTime;
+            EventFind.IdAdministrator = EventModel.IdAdministrator;
 
-                }
-                EventFind.EventTitle=EventModel.EventTitle;
-                EventFind.EventDescription=EventModel.EventDescription;
-                EventFind.ImageUrl=EventModel.ImageUrl;
-                EventFind.Modality=EventModel.Modality;
-                EventFind.InstitutionInCharge=EventModel.InstitutionInCharge;
-                EventFind.Vacancy=EventModel.Vacancy;
-                EventFind.AddressEvent=EventModel.AddressEvent;
-                EventFind.Speaker=EventModel.Speaker;
-                EventFind.EventDateTime=EventModel.EventDateTime;
-                EventFind.IdAdministrator=EventModel.IdAdministrator;
 
-           
-                bool answer = await _EventRepository.Edit(EventFind);
+            var answer = await _EventRepository.Edit(EventFind);
 
-                if (!answer)
-                {
-                    throw new TaskCanceledException("The event doesn't edit");
-
-                }
-                return answer;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            if (!answer) throw new TaskCanceledException("The event doesn't edit");
+            return answer;
         }
-
-
-
-        async Task<bool> IEventsCa.Delete(int id)
+        catch (Exception)
         {
-            try
-            {
-                var EventFind = await _EventRepository.Obtain(p => p.IdEvent==id);
-
-                if (EventFind==null)
-                {
-                    throw new TaskCanceledException("The event doesn't exist");
-
-                }
-
-                bool answer = await _EventRepository.Delete(EventFind);
-                if (!answer)
-                {
-                    throw new TaskCanceledException("The event doesn't delete");
-
-                }
-
-                return answer;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            throw;
         }
+    }
 
 
+    async Task<bool> IEventsCa.Delete(int id)
+    {
+        try
+        {
+            var EventFind = await _EventRepository.Obtain(p => p.IdEvent == id);
+
+            if (EventFind == null) throw new TaskCanceledException("The event doesn't exist");
+
+            var answer = await _EventRepository.Delete(EventFind);
+            if (!answer) throw new TaskCanceledException("The event doesn't delete");
+
+            return answer;
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 }
