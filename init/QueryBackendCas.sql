@@ -35,7 +35,7 @@ GO
 CREATE TABLE [dbo].[events_cas](
 	[id_event] [int] IDENTITY(1,1) NOT NULL,
 	[event_title] [varchar](255) NULL,
-	[event_description] [varchar](255) NULL,
+	[event_description] [text] NULL,
 	[image_url] [varchar](255) NULL,
 	[modality] [varchar](255) NULL,
 	[institution_in_charge] [varchar](255) NULL,
