@@ -116,6 +116,7 @@ public partial class BackendCasContext : DbContext
 
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.ExpiredAt).HasColumnType("datetime");
+            entity.Property(e => e.IsActive).HasComputedColumnSql("(case when [ExpiredAt]<getdate() then CONVERT([bit],(0)) else CONVERT([bit],(1)) end)", false);
             entity.Property(e => e.RefreshToken)
                 .HasMaxLength(200)
                 .IsUnicode(false);
