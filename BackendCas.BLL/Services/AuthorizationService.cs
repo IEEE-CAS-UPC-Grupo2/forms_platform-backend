@@ -8,6 +8,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Azure.Core;
+using BackendCas.UTILITY;
 
 public class AuthorizationService : IAutorizacionService
 {
@@ -64,16 +66,16 @@ public class AuthorizationService : IAutorizacionService
 
     private async Task<AuthorizationResponse> SaveHistorialTokens(int idUsuario, string token, string refreshToken)
     {
-        var historialRefreshToken = new HistorialRefreshToken
+        var historialRefreshToken = new TokenLog
         {
-            IdUsuario = idUsuario,
+            IdAdministrator = idUsuario,
             Token = token,
             RefreshToken = refreshToken,
-            FechaCreacion = DateTime.Now,
-            FechaExpiracion = DateTime.Now.AddDays(1)
+            CreatedAt = DateTime.Now,
+            ExpiredAt = DateTime.Now.AddDays(1)
         };
 
-        await _context.HistorialRefreshTokens.AddAsync(historialRefreshToken);
+        await _context.TokenLogs.AddAsync(historialRefreshToken);
         await _context.SaveChangesAsync();
 
         return new AuthorizationResponse { IdUsuarioAdm = idUsuario, Token = token, RefreshToken = refreshToken, Resultado = true, Msg = "Ok" };
@@ -81,10 +83,10 @@ public class AuthorizationService : IAutorizacionService
 
     public async Task<AuthorizationResponse> ObtainToken(AuthorizationRequest authorization)
     {
-        var usuario_encontrado = _context.Administrators.FirstOrDefault(x =>
-            x.EmailAdministrator == authorization.Email && x.PasswordAdministrator == authorization.Clave);
+        var usuario_encontrado = _context.AdministratorsCas.FirstOrDefault(x =>
+            x.Email == authorization.Email);
 
-        if (usuario_encontrado == null)
+        if (usuario_encontrado == null || !PasswordHelper.VerifyPassword(authorization.Clave, usuario_encontrado.Password))
         {
             return await Task.FromResult<AuthorizationResponse>(null);
         }
@@ -97,8 +99,8 @@ public class AuthorizationService : IAutorizacionService
 
     public async Task<AuthorizationResponse> ObtainRefreshOken(RefreshTokenRequest refreshTokenRequest, int idUsuario)
     {
-        var refreshTokenEncontrado = _context.HistorialRefreshTokens.FirstOrDefault(x =>
-            x.Token == refreshTokenRequest.TokenExpirado && x.RefreshToken == refreshTokenRequest.RefreshToken && x.IdUsuario == idUsuario);
+        var refreshTokenEncontrado = _context.TokenLogs.FirstOrDefault(x =>
+            x.Token == refreshTokenRequest.TokenExpirado && x.RefreshToken == refreshTokenRequest.RefreshToken && x.IdAdministrator == idUsuario);
 
         if (refreshTokenEncontrado == null)
         {
@@ -110,4 +112,5 @@ public class AuthorizationService : IAutorizacionService
 
         return await SaveHistorialTokens(idUsuario, tokenCreado, refreshTokenCreado);
     }
+
 }

@@ -11,4 +11,5 @@ public interface IAutorizacionService
 {
     Task<AuthorizationResponse> ObtainToken(AuthorizationRequest autorizacion);
     Task<AuthorizationResponse> ObtainRefreshOken(RefreshTokenRequest refreshTokenRequest, int idUsuario);
+
 }

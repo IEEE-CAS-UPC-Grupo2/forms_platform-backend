@@ -16,172 +16,106 @@ public partial class BackendCasContext : DbContext
     {
     }
 
-    public virtual DbSet<Administrator> Administrators { get; set; }
+    public virtual DbSet<AdministratorsCa> AdministratorsCas { get; set; }
 
     public virtual DbSet<EventsCa> EventsCas { get; set; }
-    
-    public virtual DbSet<Participant> Participants { get; set; }
-    
-    public virtual DbSet<Attendance> Attendances { get; set; }
-    
-    public virtual DbSet<Certificate> Certificates { get; set; }
-    
-    public virtual DbSet<HistorialRefreshToken> HistorialRefreshTokens { get; set; }
+
+    public virtual DbSet<Participation> Participations { get; set; }
+
+    public virtual DbSet<TokenLog> TokenLogs { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Administrator>(entity =>
+        modelBuilder.Entity<AdministratorsCa>(entity =>
         {
-            entity.HasKey(e => e.IdAdministrator).HasName("PK__administ__03E8E3A1A810EB74");
+            entity.HasKey(e => e.IdAdministrator).HasName("PK__Administ__27833EB96E1ACFC4");
 
-            entity.ToTable("administrators");
+            entity.ToTable("AdministratorsCa");
 
-            entity.Property(e => e.IdAdministrator).HasColumnName("id_administrator");
-            entity.Property(e => e.EmailAdministrator)
+            entity.Property(e => e.Email)
                 .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("email_administrator");
-            entity.Property(e => e.NameAdministrator)
+                .IsUnicode(false);
+            entity.Property(e => e.Name)
                 .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("name_administrator");
-            entity.Property(e => e.PasswordAdministrator)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("password_administrator");
+                .IsUnicode(false);
+            entity.Property(e => e.Password).HasMaxLength(32);
         });
 
         modelBuilder.Entity<EventsCa>(entity =>
         {
-            entity.HasKey(e => e.IdEvent).HasName("PK__Events__913E426F86C54842");
+            entity.HasKey(e => e.IdEvent).HasName("PK__EventsCa__E0B2AF393AF45615");
 
-            entity.ToTable("events_cas");
+            entity.ToTable("EventsCa");
 
-            entity.Property(e => e.IdEvent).HasColumnName("id_event");
-            entity.Property(e => e.AddressEvent)
+            entity.Property(e => e.Address)
                 .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("address_event");
-            entity.Property(e => e.EventDateTime)
-                .HasColumnType("datetime")
-                .HasColumnName("event_date_time");
-            entity.Property(e => e.EventDescription)
+                .IsUnicode(false);
+            entity.Property(e => e.EventDateAndTime)
                 .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("event_description");
-            entity.Property(e => e.EventDuration).HasColumnName("event_duration");
+                .IsUnicode(false);
+            entity.Property(e => e.EventDescription).HasColumnType("text");
             entity.Property(e => e.EventTitle)
                 .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("event_title");
-            entity.Property(e => e.IdAdministrator).HasColumnName("id_administrator");
+                .IsUnicode(false);
             entity.Property(e => e.ImageUrl)
                 .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("image_url");
+                .IsUnicode(false);
             entity.Property(e => e.InstitutionInCharge)
                 .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("institution_in_charge");
+                .IsUnicode(false);
             entity.Property(e => e.Modality)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("modality");
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.Speaker)
                 .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("speaker");
-            entity.Property(e => e.Vacancy).HasColumnName("vacancy");
+                .IsUnicode(false);
 
             entity.HasOne(d => d.IdAdministratorNavigation).WithMany(p => p.EventsCas)
                 .HasForeignKey(d => d.IdAdministrator)
-                .HasConstraintName("fk_id_administrator");
+                .HasConstraintName("FK__EventsCa__IdAdmi__3C69FB99");
         });
 
-        modelBuilder.Entity<Participant>(entity =>
+        modelBuilder.Entity<Participation>(entity =>
         {
-            entity.HasKey(e => e.IdParticipant).HasName("PK__Particip__D4A1A8D9A3A3D3A4");
+            entity.HasKey(e => e.IdParticipation).HasName("PK__Particip__C632615858C1D98D");
 
-            entity.ToTable("participants");
-
-            entity.Property(e => e.IdParticipant).HasColumnName("id_participant");
-            entity.Property(e => e.Dni)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("dni");
-            entity.Property(e => e.Name)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("name");
-            entity.Property(e => e.Email)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("email");
-            entity.Property(e => e.StudyCenter)
-                .HasMaxLength(255)
-                .IsUnicode(false)
-                .HasColumnName("study_center");
             entity.Property(e => e.Career)
                 .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.Dni)
+                .HasMaxLength(8)
                 .IsUnicode(false)
-                .HasColumnName("career");
-            entity.Property(e => e.IeeeMembershipCode)
+                .HasColumnName("DNI");
+            entity.Property(e => e.Email)
                 .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.IeeemembershipCode)
+                .HasMaxLength(25)
                 .IsUnicode(false)
-                .HasColumnName("ieee_membership_code");
+                .HasColumnName("IEEEMembershipCode");
+            entity.Property(e => e.Name)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+            entity.Property(e => e.StudyCenter)
+                .HasMaxLength(255)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdEventNavigation).WithMany(p => p.Participations)
+                .HasForeignKey(d => d.IdEvent)
+                .HasConstraintName("FK__Participa__IdEve__3F466844");
         });
 
-        modelBuilder.Entity<Attendance>(entity =>
+        modelBuilder.Entity<TokenLog>(entity =>
         {
-            entity.HasKey(e => e.IdAttendance).HasName("PK__Attendan__F3A3A3A3A3A3A3A3");
-            
-            entity.ToTable("attendances");
-            
-            entity.Property(e => e.IdAttendance).HasColumnName("id_attendance");
-            entity.Property(e => e.IdParticipant).HasColumnName("id_participant");
-            entity.Property(e => e.IdEvent).HasColumnName("id_event");
-            entity.HasOne(e => e.IdParticipantNavigation).WithMany(e => e.Attendances)
-                .HasForeignKey(e => e.IdParticipant)
-                .HasConstraintName("fk_id_participant");
-            entity.HasOne(e => e.IdEventNavigation).WithMany(e => e.Attendances)
-                .HasForeignKey(e => e.IdEvent)
-                .HasConstraintName("fk_id_event");
-            entity.Property(e => e.Dni).HasColumnName("dni");
-            entity.Property(e => e.Email).HasColumnName("email");
-        });
-        
-        modelBuilder.Entity<Certificate>(entity =>
-        {
-            entity.HasKey(e => e.IdCertificate).HasName("PK__Certific__D4A1A8D9A3A3D3A4");
+            entity.HasKey(e => e.IdTokenLog).HasName("PK__TokenLog__96BC59C9947633A4");
 
-            entity.ToTable("certificates");
-
-            entity.Property(e => e.IdCertificate).HasColumnName("id_certificate");
-            entity.Property(e => e.IdParticipant).HasColumnName("id_participant");
-            entity.Property(e => e.IdEvent).HasColumnName("id_event");
-            entity.HasOne(e => e.IdParticipantNavigation).WithMany(e => e.Certificates)
-                .HasForeignKey(e => e.IdParticipant)
-                .HasConstraintName("fk_id_participant");
-            entity.HasOne(e => e.IdEventNavigation).WithMany(e => e.Certificates)
-                .HasForeignKey(e => e.IdEvent)
-                .HasConstraintName("fk_id_event");
-            entity.Property(e => e.IsDelivered).HasColumnName("is_delivered");
-        });
-
-        modelBuilder.Entity<HistorialRefreshToken>(entity =>
-        {
-            entity.HasKey(e => e.IdHistorialToken).HasName("PK__Historia__03DC48A5E085D466");
-
-            entity.ToTable("HistorialRefreshToken");
-
-            entity.Property(e => e.EsActivo).HasComputedColumnSql(
-                "(case when [FechaExpiracion]<getdate() then CONVERT([bit],(0)) else CONVERT([bit],(1)) end)", false);
-            entity.Property(e => e.FechaCreacion).HasColumnType("datetime");
-            entity.Property(e => e.FechaExpiracion).HasColumnType("datetime");
+            entity.Property(e => e.CreatedAt).HasColumnType("datetime");
+            entity.Property(e => e.ExpiredAt).HasColumnType("datetime");
             entity.Property(e => e.RefreshToken)
                 .HasMaxLength(200)
                 .IsUnicode(false);
@@ -189,10 +123,11 @@ public partial class BackendCasContext : DbContext
                 .HasMaxLength(500)
                 .IsUnicode(false);
 
-            entity.HasOne(d => d.IdUsuarioNavigation).WithMany(p => p.HistorialRefreshTokens)
-                .HasForeignKey(d => d.IdUsuario)
-                .HasConstraintName("FK__Historial__IdUsu__49C3F6B7");
+            entity.HasOne(d => d.IdAdministratorNavigation).WithMany(p => p.TokenLogs)
+                .HasForeignKey(d => d.IdAdministrator)
+                .HasConstraintName("FK__TokenLogs__IdAdm__398D8EEE");
         });
+
         OnModelCreatingPartial(modelBuilder);
     }
 

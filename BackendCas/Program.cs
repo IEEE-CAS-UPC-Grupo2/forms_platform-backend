@@ -1,5 +1,6 @@
 using BackendCas.IOC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -9,6 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Add DbContext using the connection string from appsettings.json
+builder.Services.AddDbContext<DbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CnxSql")));
 
 builder.Services.InyectionDependencies(builder.Configuration);
 builder.Services.AddCors(options =>
@@ -48,10 +53,6 @@ builder.Services.AddAuthentication(config =>
         ClockSkew = TimeSpan.Zero // Elimina el tiempo de gracia predeterminado de 5 minutos
     };
 });
-
-
-
-
 
 var app = builder.Build();
 

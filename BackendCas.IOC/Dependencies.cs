@@ -50,8 +50,7 @@ public static class Dependencies
             services.AddScoped<IAutorizacionService,AuthorizationService>();
             services.AddScoped<IEventsCa, EventsCaService>();
             services.AddScoped<IParticipantService, ParticipantService>();
-            services.AddScoped<IAttendanceService, AttendanceService>();
-            services.AddScoped<ICertificateService, CertificateService>();
+            
         }
     }
 }

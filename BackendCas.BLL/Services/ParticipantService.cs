@@ -8,10 +8,10 @@ namespace BackendCas.BLL.Services;
 
 public class ParticipantService: IParticipantService
 {
-    private readonly IGenericRepository<Participant> _ParticipantRepository;
+    private readonly IGenericRepository<Participation> _ParticipantRepository;
     private readonly IMapper _mapper;
 
-    public ParticipantService(IGenericRepository<Participant> participantRepository, IMapper mapper)
+    public ParticipantService(IGenericRepository<Participation> participantRepository, IMapper mapper)
     {
         _ParticipantRepository = participantRepository;
         _mapper = mapper;
@@ -35,8 +35,8 @@ public class ParticipantService: IParticipantService
     {
         try
         {
-            var participantCreated = await _ParticipantRepository.Create(_mapper.Map<Participant>(model));
-            if (participantCreated.IdParticipant == 0)
+            var participantCreated = await _ParticipantRepository.Create(_mapper.Map<Participation>(model));
+            if (participantCreated.IdParticipation == 0)
             {
                 throw new TaskCanceledException("The participant doesn't create");
             }
@@ -54,7 +54,7 @@ public class ParticipantService: IParticipantService
     {
         try
         {
-            var participant = await _ParticipantRepository.Obtain(p => p.IdParticipant == id);
+            var participant = await _ParticipantRepository.Obtain(p => p.IdParticipation == id);
             if (participant == null)
             {
                 throw new TaskCanceledException("The participant doesn't exist");
@@ -73,15 +73,15 @@ public class ParticipantService: IParticipantService
     {
         try
         {
-            var participantModel = _mapper.Map<Participant>(model);
-            var participantEdited = await _ParticipantRepository.Obtain(u => u.IdParticipant == participantModel.IdParticipant);
+            var participantModel = _mapper.Map<Participation>(model);
+            var participantEdited = await _ParticipantRepository.Obtain(u => u.IdParticipation == participantModel.IdParticipation);
 
             participantEdited.Dni = participantModel.Dni;
             participantEdited.Name = participantModel.Name;
             participantEdited.Email = participantModel.Email;
             participantEdited.StudyCenter = participantModel.StudyCenter;
             participantEdited.Career = participantModel.Career;
-            participantEdited.IeeeMembershipCode = participantModel.IeeeMembershipCode;
+            participantEdited.IeeemembershipCode = participantModel.IeeemembershipCode;
 
             return await _ParticipantRepository.Edit(participantEdited);
         }
@@ -96,7 +96,7 @@ public class ParticipantService: IParticipantService
     {
         try
         {
-            var participantDeleted = await _ParticipantRepository.Obtain(u => u.IdParticipant == id);
+            var participantDeleted = await _ParticipantRepository.Obtain(u => u.IdParticipation == id);
 
             if (participantDeleted==null)
             {

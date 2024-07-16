@@ -90,9 +90,9 @@ public class EventsCaService : IEventsCa
             EventFind.Modality = EventModel.Modality;
             EventFind.InstitutionInCharge = EventModel.InstitutionInCharge;
             EventFind.Vacancy = EventModel.Vacancy;
-            EventFind.AddressEvent = EventModel.AddressEvent;
+            EventFind.Address = EventModel.Address;
             EventFind.Speaker = EventModel.Speaker;
-            EventFind.EventDateTime = EventModel.EventDateTime;
+            EventFind.EventDateAndTime = EventModel.EventDateAndTime;
             EventFind.IdAdministrator = EventModel.IdAdministrator;
 
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using AutoMapper;
 using BackendCas.DTO;
 using BackendCas.MODEL;
@@ -9,31 +10,37 @@ namespace BackendCas.UTILITY
     {
         public AutoMapperProfile()
         {
-            CreateMap<Administrator, AdministratorDTO>().ReverseMap();
+            CreateMap<AdministratorDTO, AdministratorsCa>()
+                       .ForMember(dest => dest.Password, opt => opt.MapFrom(src => Encoding.UTF8.GetBytes(src.Password ?? string.Empty)));
+
+            CreateMap<AdministratorsCa, AdministratorDTO>()
+                .ForMember(dest => dest.Password, opt => opt.MapFrom(src => Encoding.UTF8.GetString(src.Password)));
+
 
             CreateMap<EventsCa, EventsCaDTO>()
-                .ForMember(dest => dest.EventDateTime, opt => opt.MapFrom(src => src.EventDateTime.HasValue ? src.EventDateTime.Value.ToString("yyyy/MM/dd HH:mm:ss") : null))
-                .ReverseMap()
-                .ForMember(dest => dest.EventDateTime, opt => opt.MapFrom(src => ParseDateTime(src.EventDateTime)));
+                 .ForMember(dest => dest.EventDateAndTime, opt => opt.MapFrom(src =>
+                     FormatDateTime(src.EventDateAndTime)))
+                 .ReverseMap()
+                 .ForMember(dest => dest.EventDateAndTime, opt => opt.MapFrom(src =>
+                     src.EventDateAndTime));
 
-            CreateMap<Participant, ParticipantDTO>().ReverseMap();
-            CreateMap<Attendance, AttendanceDTO>().ReverseMap();
-            CreateMap<Certificate, CertificateDTO>().ReverseMap();
+            CreateMap<Participation, ParticipantDTO>().ReverseMap();
+           
         }
 
-        private DateTime? ParseDateTime(string dateTimeString)
+        private string FormatDateTime(string? dateTimeString)
         {
             if (string.IsNullOrEmpty(dateTimeString))
             {
                 return null;
             }
 
-            if (DateTime.TryParseExact(dateTimeString, "yyyy/MM/dd HH:mm:ss", null, System.Globalization.DateTimeStyles.None, out DateTime parsedDateTime))
+            if (DateTime.TryParse(dateTimeString, out DateTime parsedDateTime))
             {
-                return parsedDateTime;
+                return parsedDateTime.ToString("yyyy/MM/dd HH:mm:ss");
             }
 
-            return null;
+            return dateTimeString;
         }
     }
 }

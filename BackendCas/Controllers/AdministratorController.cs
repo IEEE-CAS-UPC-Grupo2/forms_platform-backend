@@ -40,7 +40,6 @@ public class AdministratorController : ControllerBase
         return Ok(rsp);
     }
 
-    [Authorize]
     [HttpPost]
     [Route("Save")]
     public async Task<IActionResult> Save([FromBody] AdministratorDTO producto)

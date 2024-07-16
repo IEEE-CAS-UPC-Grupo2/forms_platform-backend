@@ -9,15 +9,17 @@ using BackendCas.BLL.Services.Contrat;
 using BackendCas.DAL.Repositories.Contrat;
 using BackendCas.DTO;
 using BackendCas.MODEL;
+using BackendCas.UTILITY;
+using BCrypt.Net;
 
 namespace BackendCas.BLL.Services;
 
 public class AdministratorService : IAdministratorService
 {
-    private readonly IGenericRepository<Administrator> _PruebaRepository;
+    private readonly IGenericRepository<AdministratorsCa> _PruebaRepository;
     private readonly IMapper _mapper;
 
-    public AdministratorService(IGenericRepository<Administrator> pruebaRepository, IMapper mapper)
+    public AdministratorService(IGenericRepository<AdministratorsCa> pruebaRepository, IMapper mapper)
     {
         _PruebaRepository = pruebaRepository;
         _mapper = mapper;
@@ -42,9 +44,15 @@ public class AdministratorService : IAdministratorService
     {
         try
         {
-            var productoCreado = await _PruebaRepository.Create(_mapper.Map<Administrator>(modelo));
+            var adminModel = _mapper.Map<AdministratorsCa>(modelo);
+            adminModel.Password = PasswordHelper.HashPassword(modelo.Password);
+            adminModel.Email = modelo.Email;
+            adminModel.Name = modelo.Name;
+
+            var productoCreado = await _PruebaRepository.Create(adminModel);
             if (productoCreado.IdAdministrator == 0)
                 throw new TaskCanceledException("The administrator doesn't create");
+
             return _mapper.Map<AdministratorDTO>(productoCreado);
         }
         catch (Exception)
@@ -57,14 +65,14 @@ public class AdministratorService : IAdministratorService
     {
         try
         {
-            var productoModelo = _mapper.Map<Administrator>(modelo);
+            var productoModelo = _mapper.Map<AdministratorsCa>(modelo);
 
             var productoEncontraro =
                 await _PruebaRepository.Obtain(u => u.IdAdministrator == productoModelo.IdAdministrator);
             if (productoEncontraro == null) throw new TaskCanceledException("The administrator doesn't exist");
-            productoEncontraro.NameAdministrator = productoModelo.NameAdministrator;
-            productoEncontraro.EmailAdministrator = productoModelo.EmailAdministrator;
-            productoEncontraro.PasswordAdministrator = productoModelo.PasswordAdministrator;
+            productoEncontraro.Name = productoModelo.Name;
+            productoEncontraro.Email = productoModelo.Email;
+            productoEncontraro.Password = productoModelo.Password;
 
 
             var answer = await _PruebaRepository.Edit(productoEncontraro);
@@ -96,5 +104,15 @@ public class AdministratorService : IAdministratorService
         {
             throw;
         }
+    }
+
+    private byte[] EncryptPassword(string password)
+    {
+        // Generate a salt and hash the password
+        string salt = BCrypt.Net.BCrypt.GenerateSalt();
+        string hash = BCrypt.Net.BCrypt.HashPassword(password, salt);
+
+        // Convert the hash to byte array
+        return Encoding.UTF8.GetBytes(hash);
     }
 }

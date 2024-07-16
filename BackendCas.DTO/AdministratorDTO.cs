@@ -10,10 +10,10 @@ public class AdministratorDTO
 {
     public int IdAdministrator { get; set; }
 
-    public string? NameAdministrator { get; set; }
+    public string? Name { get; set; }
 
-    public string? EmailAdministrator { get; set; }
+    public string? Email { get; set; }
 
-    public string? PasswordAdministrator { get; set; }
+    public string? Password { get; set; }
     //public virtual ICollection<EventsCaDTO> EventsCas { get; set; }
 }

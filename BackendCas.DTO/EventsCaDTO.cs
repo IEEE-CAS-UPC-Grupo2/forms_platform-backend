@@ -26,7 +26,7 @@ public class EventsCaDTO
 
     public string? Speaker { get; set; }
 
-        public string? EventDateTime { get; set; } // Mantener como string
+        public string? EventDateAndTime { get; set; } // Mantener como string
 
     public int? EventDuration { get; set; }
 
