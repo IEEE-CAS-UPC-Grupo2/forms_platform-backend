@@ -39,7 +39,7 @@ public class EventsCaController : ControllerBase
             rsp.msg = ex.Message;
         }
 
-            return Ok(rsp);
+        return Ok(rsp);
         }
         
         //[Authorize]
