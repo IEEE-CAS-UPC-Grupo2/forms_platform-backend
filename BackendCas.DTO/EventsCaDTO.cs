@@ -22,7 +22,7 @@ public class EventsCaDTO
 
     public int? Vacancy { get; set; }
 
-    public string? AddressEvent { get; set; }
+    public string? Address { get; set; }
 
     public string? Speaker { get; set; }
 
