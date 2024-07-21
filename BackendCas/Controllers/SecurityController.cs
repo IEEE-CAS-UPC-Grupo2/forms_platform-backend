@@ -19,7 +19,7 @@ public class SecurityController : ControllerBase
 
     [HttpPost]
     [Route("Authenticate")]
-    public async Task<IActionResult> Autenticar([FromBody] AuthorizationRequest authorizationRequest)
+    public async Task<IActionResult> Authenticate([FromBody] AuthorizationRequest authorizationRequest)
     {
         var authorizationResult = await _authorizationService.ObtainToken(authorizationRequest);
         if (authorizationResult == null)
