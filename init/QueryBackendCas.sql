@@ -1,13 +1,18 @@
-Create Database BackendCas
-use BackendCas
+SET QUOTED_IDENTIFIER ON;
+GO
 
+CREATE DATABASE BackendCas;
+GO
+USE BackendCas;
+GO
 
-CREATE TABLE AdministratorsCa (
+CREATE TABLE WebAdministrators (
     IdAdministrator INT PRIMARY KEY IDENTITY(1,1),
     Name VARCHAR(255),
     Email VARCHAR(255),
     Password VARBINARY(32)
 );
+GO
 
 CREATE TABLE TokenLogs (
     IdTokenLog INT PRIMARY KEY IDENTITY(1,1),
@@ -16,11 +21,24 @@ CREATE TABLE TokenLogs (
     RefreshToken VARCHAR(200),
     CreatedAt DATETIME,
     ExpiredAt DATETIME,
-	EsActivo AS ( iif(FechaExpiracion < getdate(), convert(bit,0),convert(bit,1))),
-    FOREIGN KEY (IdAdministrator) REFERENCES AdministratorsCa(IdAdministrator)
+    isActive BIT,
+    FOREIGN KEY (IdAdministrator) REFERENCES WebAdministrators(IdAdministrator)
 );
+GO
 
-CREATE TABLE EventsCa (
+CREATE TRIGGER trg_UpdateIsActive
+ON TokenLogs
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE TokenLogs
+    SET isActive = CASE WHEN ExpiredAt < GETDATE() THEN 0 ELSE 1 END
+    WHERE IdTokenLog IN (SELECT DISTINCT IdTokenLog FROM Inserted);
+END;
+GO
+
+CREATE TABLE PlatformEvents (
     IdEvent INT PRIMARY KEY IDENTITY(1,1),
     IdAdministrator INT,
     EventTitle VARCHAR(255),
@@ -33,8 +51,9 @@ CREATE TABLE EventsCa (
     Speaker VARCHAR(255),
     EventDateAndTime VARCHAR(255),
     EventDuration INT,
-    FOREIGN KEY (IdAdministrator) REFERENCES AdministratorsCa(IdAdministrator)
+    FOREIGN KEY (IdAdministrator) REFERENCES WebAdministrators(IdAdministrator)
 );
+GO
 
 CREATE TABLE Participations (
     IdParticipation INT PRIMARY KEY IDENTITY(1,1),
@@ -47,5 +66,6 @@ CREATE TABLE Participations (
     IEEEMembershipCode VARCHAR(25) NULL,
     HasCertificate BIT,
     HasAttended BIT,
-    FOREIGN KEY (IdEvent) REFERENCES EventsCa(IdEvent)
+    FOREIGN KEY (IdEvent) REFERENCES PlatformEvents(IdEvent)
 );
+GO

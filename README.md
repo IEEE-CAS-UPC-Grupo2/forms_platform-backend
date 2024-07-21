@@ -31,5 +31,5 @@ docker ps
 3. Ejecutar el siguiente comando para crear tablas.
 
 ```bash
-docker exec -it <docker-container-id> /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -i ./init/QueryBackendCas.sql
+docker exec sqlserver /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -i ./init/QueryBackendCas.sql
 ```
