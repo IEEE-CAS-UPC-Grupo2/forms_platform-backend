@@ -25,22 +25,9 @@ CREATE TABLE TokenLogs
     RefreshToken    VARCHAR(200),
     CreatedAt       DATETIME,
     ExpiredAt       DATETIME,
-    isActive        BIT,
+    isActive AS ( iif(ExpiredAt < getdate(), convert(bit,0),convert(bit,1))),
     FOREIGN KEY (IdAdministrator) REFERENCES WebAdministrators (IdAdministrator)
 );
-GO
-
-CREATE TRIGGER trg_UpdateIsActive
-    ON TokenLogs AFTER INSERT,
-UPDATE
-    AS
-BEGIN
-    SET
-NOCOUNT ON;
-UPDATE TokenLogs
-SET isActive = CASE WHEN ExpiredAt < GETDATE() THEN 0 ELSE 1 END
-WHERE IdTokenLog IN (SELECT DISTINCT IdTokenLog FROM Inserted);
-END;
 GO
 
 CREATE TABLE PlatformEvents
