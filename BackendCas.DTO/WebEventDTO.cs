@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BackendCas.DTO;
+﻿namespace BackendCas.DTO;
 
 public class EventsCaDTO
 {
@@ -26,11 +20,9 @@ public class EventsCaDTO
 
     public string? Speaker { get; set; }
 
-        public string? EventDateAndTime { get; set; } // Mantener como string
+    public string? EventDateAndTime { get; set; } // Maintain as string
 
     public int? EventDuration { get; set; }
 
     public int? IdAdministrator { get; set; }
-
-    //public virtual AdministratorDTO? IdAdministratorNavigation { get; set; }
 }

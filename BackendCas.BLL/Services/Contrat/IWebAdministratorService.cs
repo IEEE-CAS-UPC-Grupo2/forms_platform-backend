@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BackendCas.DTO;
+﻿using BackendCas.DTO;
 
 namespace BackendCas.BLL.Services.Contrat;
 
-public interface IAdministratorService
+public interface IWebAdministratorService
 {
     Task<List<AdministratorDTO>> List();
 

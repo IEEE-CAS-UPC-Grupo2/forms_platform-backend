@@ -6,10 +6,10 @@ using BackendCas.MODEL;
 
 namespace BackendCas.BLL.Services;
 
-public class ParticipantService: IParticipantService
+public class ParticipantService : IParticipantService
 {
-    private readonly IGenericRepository<Participation> _ParticipantRepository;
     private readonly IMapper _mapper;
+    private readonly IGenericRepository<Participation> _ParticipantRepository;
 
     public ParticipantService(IGenericRepository<Participation> participantRepository, IMapper mapper)
     {
@@ -37,9 +37,7 @@ public class ParticipantService: IParticipantService
         {
             var participantCreated = await _ParticipantRepository.Create(_mapper.Map<Participation>(model));
             if (participantCreated.IdParticipation == 0)
-            {
                 throw new TaskCanceledException("The participant doesn't create");
-            }
 
             return _mapper.Map<ParticipantDTO>(participantCreated);
         }
@@ -55,10 +53,7 @@ public class ParticipantService: IParticipantService
         try
         {
             var participant = await _ParticipantRepository.Obtain(p => p.IdParticipation == id);
-            if (participant == null)
-            {
-                throw new TaskCanceledException("The participant doesn't exist");
-            }
+            if (participant == null) throw new TaskCanceledException("The participant doesn't exist");
 
             return _mapper.Map<ParticipantDTO>(participant);
         }
@@ -74,14 +69,15 @@ public class ParticipantService: IParticipantService
         try
         {
             var participantModel = _mapper.Map<Participation>(model);
-            var participantEdited = await _ParticipantRepository.Obtain(u => u.IdParticipation == participantModel.IdParticipation);
+            var participantEdited =
+                await _ParticipantRepository.Obtain(u => u.IdParticipation == participantModel.IdParticipation);
 
             participantEdited.Dni = participantModel.Dni;
             participantEdited.Name = participantModel.Name;
             participantEdited.Email = participantModel.Email;
             participantEdited.StudyCenter = participantModel.StudyCenter;
             participantEdited.Career = participantModel.Career;
-            participantEdited.IeeemembershipCode = participantModel.IeeemembershipCode;
+            participantEdited.IeeeMembershipCode = participantModel.IeeeMembershipCode;
 
             return await _ParticipantRepository.Edit(participantEdited);
         }
@@ -98,11 +94,8 @@ public class ParticipantService: IParticipantService
         {
             var participantDeleted = await _ParticipantRepository.Obtain(u => u.IdParticipation == id);
 
-            if (participantDeleted==null)
-            {
-                throw new TaskCanceledException("The participant doesn't exist");
-            }
-            
+            if (participantDeleted == null) throw new TaskCanceledException("The participant doesn't exist");
+
             return await _ParticipantRepository.Delete(participantDeleted);
         }
         catch (Exception e)

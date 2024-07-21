@@ -1,21 +1,20 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using BackendCas.BLL.Services.Contrat;
+﻿using BackendCas.BLL.Services.Contrat;
 using BackendCas.DTO;
 using BackendCas.Utils;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BackendCas.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AdministratorController : ControllerBase
+public class WebAdministratorController : ControllerBase
 {
-    private readonly IAdministratorService _administratorService;
+    private readonly IWebAdministratorService _webAdministratorService;
 
-    public AdministratorController(IAdministratorService administratorService)
+    public WebAdministratorController(IWebAdministratorService webAdministratorService)
     {
-        _administratorService = administratorService;
+        _webAdministratorService = webAdministratorService;
     }
 
     [Authorize]
@@ -28,7 +27,7 @@ public class AdministratorController : ControllerBase
         try
         {
             rsp.status = true;
-            rsp.Value = await _administratorService.List();
+            rsp.Value = await _webAdministratorService.List();
         }
         catch (Exception ex)
         {
@@ -48,7 +47,7 @@ public class AdministratorController : ControllerBase
         try
         {
             rsp.status = true;
-            rsp.Value = await _administratorService.Create(producto);
+            rsp.Value = await _webAdministratorService.Create(producto);
         }
         catch (Exception ex)
         {
@@ -69,7 +68,7 @@ public class AdministratorController : ControllerBase
         try
         {
             rsp.status = true;
-            rsp.Value = await _administratorService.Edit(producto);
+            rsp.Value = await _webAdministratorService.Edit(producto);
         }
         catch (Exception ex)
         {
@@ -90,7 +89,7 @@ public class AdministratorController : ControllerBase
         try
         {
             rsp.status = true;
-            rsp.Value = await _administratorService.Delete(id);
+            rsp.Value = await _webAdministratorService.Delete(id);
         }
         catch (Exception ex)
         {

@@ -1,5 +1,6 @@
 using BackendCas.BLL.Services.Contrat;
 using BackendCas.DTO;
+using BackendCas.MODEL;
 using BackendCas.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,24 +11,24 @@ namespace BackendCas.Controllers;
 [ApiController]
 public class ParticipantController : ControllerBase
 {
-    private readonly IParticipantService _participantService;
+    private readonly IParticipationService _participationService;
 
-    public ParticipantController(IParticipantService participantService)
+    public ParticipantController(IParticipationService participationService)
     {
-        _participantService = participantService;
+        _participationService = participationService;
     }
-    
+
     [Authorize]
     [HttpGet]
     [Route("List")]
     public async Task<IActionResult> List()
     {
-        var rsp = new Response<List<ParticipantDTO>>();
+        var rsp = new Response<List<Participation>>();
 
         try
         {
             rsp.status = true;
-            rsp.Value = await _participantService.List();
+            rsp.Value = await _participationService.List();
         }
         catch (Exception ex)
         {
@@ -38,17 +39,17 @@ public class ParticipantController : ControllerBase
 
         return Ok(rsp);
     }
-    
+
     [Authorize]
     [HttpPost]
     [Route("Save")]
-    public async Task<IActionResult> Save([FromBody] ParticipantDTO participant)
+    public async Task<IActionResult> Save([FromBody] ParticipationDTO participation)
     {
-        var rsp = new Response<ParticipantDTO>();
+        var rsp = new Response<ParticipationDTO>();
         try
         {
             rsp.status = true;
-            rsp.Value = await _participantService.Create(participant);
+            rsp.Value = await _participationService.Create(participation);
         }
         catch (Exception ex)
         {
@@ -56,6 +57,7 @@ public class ParticipantController : ControllerBase
 
             rsp.msg = ex.Message;
         }
+
         return Ok(rsp);
     }
 
@@ -63,11 +65,11 @@ public class ParticipantController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var rsp = new Response<ParticipantDTO>();
+        var rsp = new Response<Participation>();
         try
         {
-            var participant = await _participantService.GetById(id);
-            if (participant == null)
+            var participation = await _participationService.GetById(id);
+            if (participation == null)
             {
                 rsp.status = false;
                 rsp.msg = "Participant not found";
@@ -75,7 +77,7 @@ public class ParticipantController : ControllerBase
             else
             {
                 rsp.status = true;
-                rsp.Value = participant;
+                rsp.Value = participation;
             }
         }
         catch (Exception ex)
@@ -83,18 +85,19 @@ public class ParticipantController : ControllerBase
             Console.WriteLine(ex);
             throw;
         }
+
         return Ok(rsp);
     }
-    
+
     [Authorize]
     [HttpPut("{id}")]
-    public async Task<IActionResult> Edit([FromBody] ParticipantDTO participant)
+    public async Task<IActionResult> Edit([FromBody] Participation participation)
     {
         var rsp = new Response<bool>();
         try
         {
             rsp.status = true;
-            rsp.Value = await _participantService.Edit(participant);
+            rsp.Value = await _participationService.Edit(participation);
         }
         catch (Exception ex)
         {
@@ -102,9 +105,10 @@ public class ParticipantController : ControllerBase
 
             rsp.msg = ex.Message;
         }
+
         return Ok(rsp);
     }
-    
+
     [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
@@ -113,7 +117,7 @@ public class ParticipantController : ControllerBase
         try
         {
             rsp.status = true;
-            rsp.Value = await _participantService.Delete(id);
+            rsp.Value = await _participationService.Delete(id);
         }
         catch (Exception ex)
         {
@@ -121,6 +125,7 @@ public class ParticipantController : ControllerBase
 
             rsp.msg = ex.Message;
         }
+
         return Ok(rsp);
     }
 }
