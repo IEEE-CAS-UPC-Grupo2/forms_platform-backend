@@ -1,20 +1,19 @@
-﻿using BackendCas.BLL.Services.Contrat;
-using BackendCas.DAL.DBContext;
-using BackendCas.MODEL.Custom;
-using BackendCas.MODEL;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Azure.Core;
+using BackendCas.BLL.Services.Contrat;
+using BackendCas.DAL.DBContext;
+using BackendCas.MODEL;
+using BackendCas.MODEL.Custom;
 using BackendCas.UTILITY;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
-public class AuthorizationService : IAutorizacionService
+public class AuthorizationService : IAuthorizationService
 {
-    private readonly BackendCasContext _context;
     private readonly IConfiguration _configuration;
+    private readonly BackendCasContext _context;
 
     public AuthorizationService(BackendCasContext context, IConfiguration configuration)
     {
@@ -22,15 +21,46 @@ public class AuthorizationService : IAutorizacionService
         _configuration = configuration;
     }
 
-    private string GenerateToken(string idUsuario)
+    public async Task<AuthorizationResponse> ObtainToken(AuthorizationRequest authorization)
+    {
+        var foundAdmin = _context.AdministratorsCas.FirstOrDefault(x =>
+            x.Email == authorization.Email);
+
+        if (foundAdmin == null ||
+            !PasswordHelper.VerifyPassword(authorization.Password, foundAdmin.Password))
+            return await Task.FromResult<AuthorizationResponse>(null);
+
+        var createdToken = GenerateToken(foundAdmin.IdAdministrator.ToString());
+        var createdRefreshToken = GenerateRefreshToken();
+
+        return await SaveTokenLog(foundAdmin.IdAdministrator, createdToken, createdRefreshToken);
+    }
+
+    public async Task<AuthorizationResponse> ObtainRefreshToken(RefreshTokenRequest refreshTokenRequest,
+        int idAdministrator)
+    {
+        var foundRefreshToken = _context.TokenLogs.FirstOrDefault(x =>
+            x.Token == refreshTokenRequest.ExpiredToken && x.RefreshToken == refreshTokenRequest.RefreshToken &&
+            x.IdAdministrator == idAdministrator);
+
+        if (foundRefreshToken == null)
+            return new AuthorizationResponse { Result = false, Msg = "No existe RefreshToken" };
+
+        var createdRefreshToken = GenerateRefreshToken();
+        var createdToken = GenerateToken(idAdministrator.ToString());
+
+        return await SaveTokenLog(idAdministrator, createdToken, createdRefreshToken);
+    }
+
+    private string GenerateToken(string idAdministrator)
     {
         var key = _configuration.GetValue<string>("JwtSettings:key");
         var keyBytes = Encoding.ASCII.GetBytes(key);
 
         var claims = new ClaimsIdentity();
-        claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, idUsuario));
+        claims.AddClaim(new Claim(ClaimTypes.NameIdentifier, idAdministrator));
 
-        var credencialesToken = new SigningCredentials(
+        var tokenCredentials = new SigningCredentials(
             new SymmetricSecurityKey(keyBytes),
             SecurityAlgorithms.HmacSha256Signature
         );
@@ -43,15 +73,15 @@ public class AuthorizationService : IAutorizacionService
             Expires = now.AddMinutes(30),
             NotBefore = now,
             IssuedAt = now,
-            SigningCredentials = credencialesToken
+            SigningCredentials = tokenCredentials
         };
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var tokenConfig = tokenHandler.CreateToken(tokenDescriptor);
 
-        string tokenCreado = tokenHandler.WriteToken(tokenConfig);
+        var tokenCreated = tokenHandler.WriteToken(tokenConfig);
 
-        return tokenCreado;
+        return tokenCreated;
     }
 
     private string GenerateRefreshToken()
@@ -64,53 +94,23 @@ public class AuthorizationService : IAutorizacionService
         }
     }
 
-    private async Task<AuthorizationResponse> SaveHistorialTokens(int idUsuario, string token, string refreshToken)
+    private async Task<AuthorizationResponse> SaveTokenLog(int idAdministrator, string token, string refreshToken)
     {
-        var historialRefreshToken = new TokenLog
+        var newTokenLog = new TokenLog
         {
-            IdAdministrator = idUsuario,
+            IdAdministrator = idAdministrator,
             Token = token,
             RefreshToken = refreshToken,
             CreatedAt = DateTime.Now,
             ExpiredAt = DateTime.Now.AddDays(1)
         };
 
-        await _context.TokenLogs.AddAsync(historialRefreshToken);
+        await _context.TokenLogs.AddAsync(newTokenLog);
         await _context.SaveChangesAsync();
 
-        return new AuthorizationResponse { IdUsuarioAdm = idUsuario, Token = token, RefreshToken = refreshToken, Resultado = true, Msg = "Ok" };
-    }
-
-    public async Task<AuthorizationResponse> ObtainToken(AuthorizationRequest authorization)
-    {
-        var usuario_encontrado = _context.AdministratorsCas.FirstOrDefault(x =>
-            x.Email == authorization.Email);
-
-        if (usuario_encontrado == null || !PasswordHelper.VerifyPassword(authorization.Clave, usuario_encontrado.Password))
+        return new AuthorizationResponse
         {
-            return await Task.FromResult<AuthorizationResponse>(null);
-        }
-
-        string tokenCreado = GenerateToken(usuario_encontrado.IdAdministrator.ToString());
-        string refreshTokenCreado = GenerateRefreshToken();
-
-        return await SaveHistorialTokens(usuario_encontrado.IdAdministrator, tokenCreado, refreshTokenCreado);
+            IdAdministrator = idAdministrator, Token = token, RefreshToken = refreshToken, Result = true, Msg = "Ok"
+        };
     }
-
-    public async Task<AuthorizationResponse> ObtainRefreshOken(RefreshTokenRequest refreshTokenRequest, int idUsuario)
-    {
-        var refreshTokenEncontrado = _context.TokenLogs.FirstOrDefault(x =>
-            x.Token == refreshTokenRequest.TokenExpirado && x.RefreshToken == refreshTokenRequest.RefreshToken && x.IdAdministrator == idUsuario);
-
-        if (refreshTokenEncontrado == null)
-        {
-            return new AuthorizationResponse { Resultado = false, Msg = "No existe refreshToken" };
-        }
-
-        var refreshTokenCreado = GenerateRefreshToken();
-        var tokenCreado = GenerateToken(idUsuario.ToString());
-
-        return await SaveHistorialTokens(idUsuario, tokenCreado, refreshTokenCreado);
-    }
-
 }

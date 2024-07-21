@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BackendCas.DTO;
+﻿namespace BackendCas.DTO;
 
 public class AdministratorDTO
 {
@@ -15,5 +9,4 @@ public class AdministratorDTO
     public string? Email { get; set; }
 
     public string? Password { get; set; }
-    //public virtual ICollection<EventsCaDTO> EventsCas { get; set; }
 }

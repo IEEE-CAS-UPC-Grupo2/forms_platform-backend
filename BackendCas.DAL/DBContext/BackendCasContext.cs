@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using BackendCas.MODEL;
 using Microsoft.EntityFrameworkCore;
-using BackendCas.MODEL;
 
 namespace BackendCas.DAL.DBContext;
 
@@ -16,9 +14,9 @@ public partial class BackendCasContext : DbContext
     {
     }
 
-    public virtual DbSet<AdministratorsCa> AdministratorsCas { get; set; }
+    public virtual DbSet<WebAdministrator> AdministratorsCas { get; set; }
 
-    public virtual DbSet<EventsCa> EventsCas { get; set; }
+    public virtual DbSet<PlatformEvent> EventsCas { get; set; }
 
     public virtual DbSet<Participation> Participations { get; set; }
 
@@ -26,16 +24,15 @@ public partial class BackendCasContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<AdministratorsCa>(entity =>
+        modelBuilder.Entity<WebAdministrator>(entity =>
         {
             entity.HasKey(e => e.IdAdministrator).HasName("PK__Administ__27833EB96E1ACFC4");
 
-            entity.ToTable("AdministratorsCa");
+            entity.ToTable("WebAdministrators");
 
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
@@ -46,11 +43,11 @@ public partial class BackendCasContext : DbContext
             entity.Property(e => e.Password).HasMaxLength(32);
         });
 
-        modelBuilder.Entity<EventsCa>(entity =>
+        modelBuilder.Entity<PlatformEvent>(entity =>
         {
-            entity.HasKey(e => e.IdEvent).HasName("PK__EventsCa__E0B2AF393AF45615");
+            entity.HasKey(e => e.IdEvent).HasName("PK__PlatEvents__E0B2AF393AF45615");
 
-            entity.ToTable("EventsCa");
+            entity.ToTable("PlatformEvents");
 
             entity.Property(e => e.Address)
                 .HasMaxLength(255)
@@ -77,7 +74,7 @@ public partial class BackendCasContext : DbContext
 
             entity.HasOne(d => d.IdAdministratorNavigation).WithMany(p => p.EventsCas)
                 .HasForeignKey(d => d.IdAdministrator)
-                .HasConstraintName("FK__EventsCa__IdAdmi__3C69FB99");
+                .HasConstraintName("FK__PlatEvents__IdAdmi__3C69FB99");
         });
 
         modelBuilder.Entity<Participation>(entity =>
@@ -94,7 +91,7 @@ public partial class BackendCasContext : DbContext
             entity.Property(e => e.Email)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.IeeemembershipCode)
+            entity.Property(e => e.IeeeMembershipCode)
                 .HasMaxLength(25)
                 .IsUnicode(false)
                 .HasColumnName("IEEEMembershipCode");
@@ -116,7 +113,8 @@ public partial class BackendCasContext : DbContext
 
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.ExpiredAt).HasColumnType("datetime");
-            entity.Property(e => e.IsActive).HasComputedColumnSql("(case when [ExpiredAt]<getdate() then CONVERT([bit],(0)) else CONVERT([bit],(1)) end)", false);
+            entity.Property(e => e.IsActive).HasComputedColumnSql(
+                "(case when [ExpiredAt]<getdate() then CONVERT([bit],(0)) else CONVERT([bit],(1)) end)", false);
             entity.Property(e => e.RefreshToken)
                 .HasMaxLength(200)
                 .IsUnicode(false);

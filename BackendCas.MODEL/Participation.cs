@@ -1,33 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace BackendCas.MODEL;
 
-namespace BackendCas.MODEL
+public class Participation
 {
-    public partial class Participation
-    {
-        public int IdParticipation { get; set; }
+    public int IdParticipation { get; set; }
 
-        public int? IdEvent { get; set; }
+    public int IdEvent { get; set; }
 
-        public string Dni { get; set; } = null!;
+    public string Dni { get; set; } = null!;
 
-        public string Name { get; set; } = null!;
+    public string Name { get; set; } = null!;
 
-        public string Email { get; set; } = null!;
+    public string Email { get; set; } = null!;
 
-        public string? StudyCenter { get; set; }
+    public string StudyCenter { get; set; } = null!;
 
-        public string? Career { get; set; }
+    public string Career { get; set; } = null!;
 
-        public string? IeeemembershipCode { get; set; }
+    public string? IeeeMembershipCode { get; set; }
 
-        public bool HasCertificate { get; set; }
+    public bool HasCertificate { get; set; } = false;
 
-        public bool HasAttended { get; set; }
+    public bool HasAttended { get; set; } = false;
 
-        public virtual EventsCa? IdEventNavigation { get; set; }
-    }
+    public virtual PlatformEvent? IdEventNavigation { get; set; }
 }

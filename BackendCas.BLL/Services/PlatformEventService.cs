@@ -8,29 +8,29 @@ namespace BackendCas.BLL.Services;
 
 public class PlatformEventService : IPlatformEventService
 {
-    private readonly IGenericRepository<PlatformEvent> _EventRepository;
+    private readonly IGenericRepository<PlatformEvent> _eventRepository;
     private readonly IMapper _mapper;
 
-    public PlatformEventService(IGenericRepository<PlatformEvent> eventrepository, IMapper mapper)
+    public PlatformEventService(IGenericRepository<PlatformEvent> eventRepository, IMapper mapper)
     {
-        _EventRepository = eventrepository;
+        _eventRepository = eventRepository;
         _mapper = mapper;
     }
 
     async Task<List<WebEventDTO>> IPlatformEventService.List()
     {
-        var listaCategorias = await _EventRepository.Find();
+        var listEvents = await _eventRepository.Find();
 
 
-        return _mapper.Map<List<WebEventDTO>>(listaCategorias.ToList());
+        return _mapper.Map<List<WebEventDTO>>(listEvents.ToList());
     }
 
     async Task<WebEventDTO> IPlatformEventService.GetById(int id)
     {
         try
         {
-            var events = await _EventRepository.Obtain(c => c.IdEvent == id);
-            if (events == null) throw new KeyNotFoundException("The event doesn't exist");
+            var events = await _eventRepository.Obtain(c => c.IdEvent == id);
+            if (events == null) throw new KeyNotFoundException("El evento no existe");
 
             return _mapper.Map<WebEventDTO>(events);
         }
@@ -43,44 +43,42 @@ public class PlatformEventService : IPlatformEventService
 
     async Task<WebEventDTO> IPlatformEventService.Create(WebEventDTO modelo)
     {
-        var EventCreate = await _EventRepository.Create(_mapper.Map<PlatformEvent>(modelo));
-        if (EventCreate.IdEvent == 0) throw new TaskCanceledException("The event doesn't create");
-        return _mapper.Map<WebEventDTO>(EventCreate);
+        var createEvent = await _eventRepository.Create(_mapper.Map<PlatformEvent>(modelo));
+        if (createEvent.IdEvent == 0) throw new TaskCanceledException("El evento no pudo ser creado");
+        return _mapper.Map<WebEventDTO>(createEvent);
     }
 
     async Task<bool> IPlatformEventService.Edit(WebEventDTO modelo)
     {
-        var EventModel = _mapper.Map<PlatformEvent>(modelo);
+        var eventModel = _mapper.Map<PlatformEvent>(modelo);
 
-        var EventFind = await _EventRepository.Obtain(u => u.IdEvent == EventModel.IdEvent);
-        if (EventFind == null) throw new TaskCanceledException("The event doesn't exist");
-        EventFind.EventTitle = EventModel.EventTitle;
-        EventFind.EventDescription = EventModel.EventDescription;
-        EventFind.ImageUrl = EventModel.ImageUrl;
-        EventFind.Modality = EventModel.Modality;
-        EventFind.InstitutionInCharge = EventModel.InstitutionInCharge;
-        EventFind.Vacancy = EventModel.Vacancy;
-        EventFind.Address = EventModel.Address;
-        EventFind.Speaker = EventModel.Speaker;
-        EventFind.EventDateAndTime = EventModel.EventDateAndTime;
-        EventFind.IdAdministrator = EventModel.IdAdministrator;
+        var foundEvent = await _eventRepository.Obtain(u => u.IdEvent == eventModel.IdEvent);
+        if (foundEvent == null) throw new TaskCanceledException("El evento no existe");
+        foundEvent.EventTitle = eventModel.EventTitle;
+        foundEvent.EventDescription = eventModel.EventDescription;
+        foundEvent.ImageUrl = eventModel.ImageUrl;
+        foundEvent.Modality = eventModel.Modality;
+        foundEvent.InstitutionInCharge = eventModel.InstitutionInCharge;
+        foundEvent.Vacancy = eventModel.Vacancy;
+        foundEvent.Address = eventModel.Address;
+        foundEvent.Speaker = eventModel.Speaker;
+        foundEvent.EventDateAndTime = eventModel.EventDateAndTime;
+        foundEvent.IdAdministrator = eventModel.IdAdministrator;
 
+        var answer = await _eventRepository.Edit(foundEvent);
 
-        var answer = await _EventRepository.Edit(EventFind);
-
-        if (!answer) throw new TaskCanceledException("The event doesn't edit");
+        if (!answer) throw new TaskCanceledException("El evento no pudo ser editado");
         return answer;
     }
 
-
     async Task<bool> IPlatformEventService.Delete(int id)
     {
-        var EventFind = await _EventRepository.Obtain(p => p.IdEvent == id);
+        var foundEvent = await _eventRepository.Obtain(p => p.IdEvent == id);
 
-        if (EventFind == null) throw new TaskCanceledException("The event doesn't exist");
+        if (foundEvent == null) throw new TaskCanceledException("El evento no existe");
 
-        var answer = await _EventRepository.Delete(EventFind);
-        if (!answer) throw new TaskCanceledException("The event doesn't delete");
+        var answer = await _eventRepository.Delete(foundEvent);
+        if (!answer) throw new TaskCanceledException("El evento no pudo ser borrado");
 
         return answer;
     }

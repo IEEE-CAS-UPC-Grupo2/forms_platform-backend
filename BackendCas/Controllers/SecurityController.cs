@@ -1,9 +1,7 @@
-﻿using BackendCas.BLL.Services.Contrat;
+﻿using System.IdentityModel.Tokens.Jwt;
+using BackendCas.BLL.Services.Contrat;
 using BackendCas.MODEL.Custom;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-
 
 namespace BackendCas.Controllers;
 
@@ -11,45 +9,43 @@ namespace BackendCas.Controllers;
 [ApiController]
 public class SecurityController : ControllerBase
 {
-    private readonly IAutorizacionService _autorizacionService;
+    private readonly IAuthorizationService _authorizationService;
 
-    public SecurityController(IAutorizacionService autorizacionService)
+    public SecurityController(IAuthorizationService authorizationService)
     {
-        _autorizacionService = autorizacionService;
+        _authorizationService = authorizationService;
     }
 
 
     [HttpPost]
-    [Route("Autenticar")]
-    public async Task<IActionResult> Autenticar([FromBody] AuthorizationRequest autorizacion)
+    [Route("Authenticate")]
+    public async Task<IActionResult> Autenticar([FromBody] AuthorizationRequest authorizationRequest)
     {
-        var resultado_autorizacion = await _autorizacionService.ObtainToken(autorizacion);
-        if (resultado_autorizacion == null)
+        var authorizationResult = await _authorizationService.ObtainToken(authorizationRequest);
+        if (authorizationResult == null)
             return Unauthorized();
 
-        return Ok(resultado_autorizacion);
+        return Ok(authorizationResult);
     }
 
 
     [HttpPost]
-    [Route("ObtenerRefreshToken")]
-    public async Task<IActionResult> ObtenerRefreshToken([FromBody] RefreshTokenRequest request)
+    [Route("ObtainRefreshToken")]
+    public async Task<IActionResult> ObtainRefreshToken([FromBody] RefreshTokenRequest request)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var tokenExpiradoSupuestamente = tokenHandler.ReadJwtToken(request.TokenExpirado);
+        var expiredTokenToVerify = tokenHandler.ReadJwtToken(request.ExpiredToken);
 
-        if (tokenExpiradoSupuestamente.ValidTo > DateTime.UtcNow)
-            return BadRequest(new AuthorizationResponse { Resultado = false, Msg = "Token no ha expirado" });
+        if (expiredTokenToVerify.ValidTo > DateTime.UtcNow)
+            return BadRequest(new AuthorizationResponse { Result = false, Msg = "Token no ha expirado" });
 
-        var idUsuario = tokenExpiradoSupuestamente.Claims.First(x =>
+        var adminId = expiredTokenToVerify.Claims.First(x =>
             x.Type == JwtRegisteredClaimNames.NameId).Value.ToString();
+        
+        var authorizationResponse = await _authorizationService.ObtainRefreshToken(request, int.Parse(adminId));
 
-
-        var autorizacionResponse = await _autorizacionService.ObtainRefreshOken(request, int.Parse(idUsuario));
-
-        if (autorizacionResponse.Resultado)
-            return Ok(autorizacionResponse);
-        else
-            return BadRequest(autorizacionResponse);
+        if (authorizationResponse.Result)
+            return Ok(authorizationResponse);
+        return BadRequest(authorizationResponse);
     }
 }

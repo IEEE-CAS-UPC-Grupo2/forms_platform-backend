@@ -41,13 +41,13 @@ public class WebAdministratorController : ControllerBase
 
     [HttpPost]
     [Route("Save")]
-    public async Task<IActionResult> Save([FromBody] AdministratorDTO producto)
+    public async Task<IActionResult> Save([FromBody] AdministratorDTO admin)
     {
         var rsp = new Response<AdministratorDTO>();
         try
         {
             rsp.status = true;
-            rsp.Value = await _webAdministratorService.Create(producto);
+            rsp.Value = await _webAdministratorService.Create(admin);
         }
         catch (Exception ex)
         {
@@ -62,13 +62,13 @@ public class WebAdministratorController : ControllerBase
     [Authorize]
     [HttpPut]
     [Route("Edit")]
-    public async Task<IActionResult> Edit([FromBody] AdministratorDTO producto)
+    public async Task<IActionResult> Edit([FromBody] AdministratorDTO admin)
     {
         var rsp = new Response<bool>();
         try
         {
             rsp.status = true;
-            rsp.Value = await _webAdministratorService.Edit(producto);
+            rsp.Value = await _webAdministratorService.Edit(admin);
         }
         catch (Exception ex)
         {

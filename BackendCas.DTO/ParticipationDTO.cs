@@ -1,19 +1,18 @@
 namespace BackendCas.DTO;
 
-// TO BE MODIFIED
-public class ParticipantDTO
+public class ParticipationDTO
 {
-    public int IdParticipant { get; set; }
-
-    public string? Dni { get; set; }
+    public int IdEvent { get; set; }
 
     public string? Name { get; set; }
 
     public string? Email { get; set; }
 
+    public string? DNI { get; set; }
+
     public string? StudyCenter { get; set; }
 
     public string? Career { get; set; }
 
-    public string? IeeeMembershipCode { get; set; }
+    public string? IEEEMembershipCode { get; set; }
 }

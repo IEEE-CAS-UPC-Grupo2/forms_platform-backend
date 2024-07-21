@@ -6,23 +6,23 @@ using BackendCas.MODEL;
 
 namespace BackendCas.BLL.Services;
 
-public class ParticipantService : IParticipantService
+public class ParticipationService : IParticipationService
 {
     private readonly IMapper _mapper;
-    private readonly IGenericRepository<Participation> _ParticipantRepository;
+    private readonly IGenericRepository<Participation> _participationRepository;
 
-    public ParticipantService(IGenericRepository<Participation> participantRepository, IMapper mapper)
+    public ParticipationService(IGenericRepository<Participation> participationRepository, IMapper mapper)
     {
-        _ParticipantRepository = participantRepository;
+        _participationRepository = participationRepository;
         _mapper = mapper;
     }
 
-    async Task<List<ParticipantDTO>> IParticipantService.List()
+    async Task<List<Participation>> IParticipationService.List()
     {
         try
         {
-            var listParticipants = await _ParticipantRepository.Find();
-            return _mapper.Map<List<ParticipantDTO>>(listParticipants.ToList());
+            var listParticipations = await _participationRepository.Find();
+            return _mapper.Map<List<Participation>>(listParticipations.ToList());
         }
         catch (Exception e)
         {
@@ -31,15 +31,25 @@ public class ParticipantService : IParticipantService
         }
     }
 
-    async Task<ParticipantDTO> IParticipantService.Create(ParticipantDTO model)
+    async Task<ParticipationDTO> IParticipationService.Create(ParticipationDTO model)
     {
         try
         {
-            var participantCreated = await _ParticipantRepository.Create(_mapper.Map<Participation>(model));
-            if (participantCreated.IdParticipation == 0)
-                throw new TaskCanceledException("The participant doesn't create");
+            var foundParticipation = await _participationRepository.Obtain(p =>
+                p.IdEvent == model.IdEvent &&
+                p.Dni == model.DNI &&
+                p.Email == model.Email);
 
-            return _mapper.Map<ParticipantDTO>(participantCreated);
+            if (foundParticipation != null)
+            {
+                throw new TaskCanceledException("Persona ya se encuentra registrada para el evento");
+            }
+            
+            var participationCreated = await _participationRepository.Create(_mapper.Map<Participation>(model));
+            if (participationCreated.IdParticipation == 0)
+                throw new TaskCanceledException("No se ha podido crear la participación");
+
+            return _mapper.Map<ParticipationDTO>(participationCreated);
         }
         catch (Exception e)
         {
@@ -48,14 +58,14 @@ public class ParticipantService : IParticipantService
         }
     }
 
-    async Task<ParticipantDTO> IParticipantService.GetById(int id)
+    async Task<Participation> IParticipationService.GetById(int id)
     {
         try
         {
-            var participant = await _ParticipantRepository.Obtain(p => p.IdParticipation == id);
-            if (participant == null) throw new TaskCanceledException("The participant doesn't exist");
+            var participation = await _participationRepository.Obtain(p => p.IdParticipation == id);
+            if (participation == null) throw new TaskCanceledException("La participación no existe");
 
-            return _mapper.Map<ParticipantDTO>(participant);
+            return _mapper.Map<Participation>(participation);
         }
         catch (Exception e)
         {
@@ -64,22 +74,24 @@ public class ParticipantService : IParticipantService
         }
     }
 
-    async Task<bool> IParticipantService.Edit(ParticipantDTO model)
+    async Task<bool> IParticipationService.Edit(Participation model)
     {
         try
         {
-            var participantModel = _mapper.Map<Participation>(model);
-            var participantEdited =
-                await _ParticipantRepository.Obtain(u => u.IdParticipation == participantModel.IdParticipation);
+            var participationModel = _mapper.Map<Participation>(model);
+            var participationEdited =
+                await _participationRepository.Obtain(u => u.IdParticipation == participationModel.IdParticipation);
 
-            participantEdited.Dni = participantModel.Dni;
-            participantEdited.Name = participantModel.Name;
-            participantEdited.Email = participantModel.Email;
-            participantEdited.StudyCenter = participantModel.StudyCenter;
-            participantEdited.Career = participantModel.Career;
-            participantEdited.IeeeMembershipCode = participantModel.IeeeMembershipCode;
+            participationEdited.Dni = participationModel.Dni;
+            participationEdited.Name = participationModel.Name;
+            participationEdited.Email = participationModel.Email;
+            participationEdited.StudyCenter = participationModel.StudyCenter;
+            participationEdited.Career = participationModel.Career;
+            participationEdited.IeeeMembershipCode = participationModel.IeeeMembershipCode;
+            participationEdited.HasAttended = participationModel.HasAttended;
+            participationEdited.HasCertificate = participationModel.HasCertificate;
 
-            return await _ParticipantRepository.Edit(participantEdited);
+            return await _participationRepository.Edit(participationEdited);
         }
         catch (Exception e)
         {
@@ -88,15 +100,35 @@ public class ParticipantService : IParticipantService
         }
     }
 
-    async Task<bool> IParticipantService.Delete(int id)
+    async Task<bool> IParticipationService.Delete(int id)
     {
         try
         {
-            var participantDeleted = await _ParticipantRepository.Obtain(u => u.IdParticipation == id);
+            var participationDeleted = await _participationRepository.Obtain(u => u.IdParticipation == id);
 
-            if (participantDeleted == null) throw new TaskCanceledException("The participant doesn't exist");
+            if (participationDeleted == null) throw new TaskCanceledException("La participación no existe");
 
-            return await _ParticipantRepository.Delete(participantDeleted);
+            return await _participationRepository.Delete(participationDeleted);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    async Task<bool> IParticipationService.UpdateAttendance(AttendanceDTO model)
+    {
+        try
+        {
+            var foundParticipation = await _participationRepository.Obtain(p =>
+                p.IdEvent == model.IdEvent &&
+                p.Dni == model.DNI &&
+                p.Email == model.Email);
+
+            foundParticipation.HasAttended = true;
+            
+            return await _participationRepository.Edit(foundParticipation);
         }
         catch (Exception e)
         {

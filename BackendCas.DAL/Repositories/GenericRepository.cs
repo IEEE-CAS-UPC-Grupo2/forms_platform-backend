@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BackendCas.DAL.Repositories.Contrat;
+﻿using System.Linq.Expressions;
 using BackendCas.DAL.DBContext;
+using BackendCas.DAL.Repositories.Contrat;
 using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace BackendCas.DAL.Repositories;
 
@@ -22,70 +17,35 @@ public class GenericRepository<TModelo> : IGenericRepository<TModelo> where TMod
 
     public async Task<TModelo> Obtain(Expression<Func<TModelo, bool>> filtro)
     {
-        try
-        {
-            var modelo = await _dbContext.Set<TModelo>().FirstOrDefaultAsync(filtro);
-            return modelo;
-        }
-        catch
-        {
-            throw;
-        }
+        var modelo = await _dbContext.Set<TModelo>().FirstOrDefaultAsync(filtro);
+        return modelo;
     }
 
     public async Task<TModelo> Create(TModelo modelo)
     {
-        try
-        {
-            _dbContext.Set<TModelo>().Add(modelo);
-            await _dbContext.SaveChangesAsync();
-            return modelo;
-        }
-        catch
-        {
-            throw;
-        }
+        _dbContext.Set<TModelo>().Add(modelo);
+        await _dbContext.SaveChangesAsync();
+        return modelo;
     }
 
     public async Task<bool> Edit(TModelo modelo)
     {
-        try
-        {
-            _dbContext.Set<TModelo>().Update(modelo);
-            await _dbContext.SaveChangesAsync();
-            return true;
-        }
-        catch
-        {
-            throw;
-        }
+        _dbContext.Set<TModelo>().Update(modelo);
+        await _dbContext.SaveChangesAsync();
+        return true;
     }
 
     public async Task<bool> Delete(TModelo modelo)
     {
-        try
-        {
-            _dbContext.Set<TModelo>().Remove(modelo);
-            await _dbContext.SaveChangesAsync();
-            return true;
-        }
-        catch
-        {
-            throw;
-        }
+        _dbContext.Set<TModelo>().Remove(modelo);
+        await _dbContext.SaveChangesAsync();
+        return true;
     }
 
     public async Task<IQueryable<TModelo>> Find(Expression<Func<TModelo, bool>> filtro = null)
     {
-        try
-        {
-            IQueryable<TModelo> queryModelo =
-                filtro == null ? _dbContext.Set<TModelo>() : _dbContext.Set<TModelo>().Where(filtro);
-            return queryModelo;
-        }
-        catch
-        {
-            throw;
-        }
+        var queryModelo =
+            filtro == null ? _dbContext.Set<TModelo>() : _dbContext.Set<TModelo>().Where(filtro);
+        return queryModelo;
     }
 }

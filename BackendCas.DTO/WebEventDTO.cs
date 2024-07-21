@@ -1,6 +1,6 @@
 ﻿namespace BackendCas.DTO;
 
-public class EventsCaDTO
+public class WebEventDTO
 {
     public int IdEvent { get; set; }
 

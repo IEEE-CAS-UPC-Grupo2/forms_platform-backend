@@ -9,16 +9,15 @@ namespace BackendCas.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ParticipantController : ControllerBase
+public class ParticipationController : ControllerBase
 {
     private readonly IParticipationService _participationService;
 
-    public ParticipantController(IParticipationService participationService)
+    public ParticipationController(IParticipationService participationService)
     {
         _participationService = participationService;
     }
 
-    [Authorize]
     [HttpGet]
     [Route("List")]
     public async Task<IActionResult> List()
@@ -40,7 +39,6 @@ public class ParticipantController : ControllerBase
         return Ok(rsp);
     }
 
-    [Authorize]
     [HttpPost]
     [Route("Save")]
     public async Task<IActionResult> Save([FromBody] ParticipationDTO participation)
@@ -61,7 +59,6 @@ public class ParticipantController : ControllerBase
         return Ok(rsp);
     }
 
-    [Authorize]
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -123,6 +120,24 @@ public class ParticipantController : ControllerBase
         {
             rsp.status = false;
 
+            rsp.msg = ex.Message;
+        }
+
+        return Ok(rsp);
+    }
+
+    [HttpPatch(template: "Attendance")]
+    public async Task<IActionResult> UpdateAttendance([FromBody] AttendanceDTO attendance)
+    {
+        var rsp = new Response<bool>();
+        try
+        {
+            rsp.status = true;
+            rsp.Value = await _participationService.UpdateAttendance(attendance);
+        }
+        catch (Exception ex)
+        {
+            rsp.status = false;
             rsp.msg = ex.Message;
         }
 

@@ -7,15 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7" />
+        <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BackendCas.DAL\BackendCas.DAL.csproj" />
-        <ProjectReference Include="..\BackendCas.DTO\BackendCas.DTO.csproj" />
-        <ProjectReference Include="..\BackendCas.MODEL\BackendCas.MODEL.csproj" />
-        <ProjectReference Include="..\BackendCas.UTILITY\BackendCas.UTILITY.csproj" />
+        <ProjectReference Include="..\BackendCas.DAL\BackendCas.DAL.csproj"/>
+        <ProjectReference Include="..\BackendCas.DTO\BackendCas.DTO.csproj"/>
+        <ProjectReference Include="..\BackendCas.MODEL\BackendCas.MODEL.csproj"/>
+        <ProjectReference Include="..\BackendCas.UTILITY\BackendCas.UTILITY.csproj"/>
     </ItemGroup>
 
 </Project>

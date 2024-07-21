@@ -1,16 +1,19 @@
 using BackendCas.DTO;
+using BackendCas.MODEL;
 
 namespace BackendCas.BLL.Services.Contrat;
 
-public interface IParticipantService
+public interface IParticipationService
 {
-    Task<List<ParticipantDTO>> List();
+    Task<List<Participation>> List();
 
-    Task<ParticipantDTO> Create(ParticipantDTO model);
+    Task<ParticipationDTO> Create(ParticipationDTO model);
 
-    Task<bool> Edit(ParticipantDTO model);
+    Task<bool> Edit(Participation model);
 
     Task<bool> Delete(int id);
 
-    Task<ParticipantDTO> GetById(int id);
+    Task<Participation> GetById(int id);
+
+    Task<bool> UpdateAttendance(AttendanceDTO model);
 }

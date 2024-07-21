@@ -6,14 +6,14 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.1.2" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.1.2"/>
+    </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BackendCas.BLL\BackendCas.BLL.csproj" />
-        <ProjectReference Include="..\BackendCas.DAL\BackendCas.DAL.csproj" />
-        <ProjectReference Include="..\BackendCas.UTILITY\BackendCas.UTILITY.csproj" />
+        <ProjectReference Include="..\BackendCas.BLL\BackendCas.BLL.csproj"/>
+        <ProjectReference Include="..\BackendCas.DAL\BackendCas.DAL.csproj"/>
+        <ProjectReference Include="..\BackendCas.UTILITY\BackendCas.UTILITY.csproj"/>
     </ItemGroup>
 
 </Project>

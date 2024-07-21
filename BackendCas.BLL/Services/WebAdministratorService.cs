@@ -11,74 +11,62 @@ namespace BackendCas.BLL.Services;
 public class WebAdministratorService : IWebAdministratorService
 {
     private readonly IMapper _mapper;
-    private readonly IGenericRepository<WebAdministrator> _PruebaRepository;
+    private readonly IGenericRepository<WebAdministrator> _adminRepository;
 
-    public WebAdministratorService(IGenericRepository<WebAdministrator> pruebaRepository, IMapper mapper)
+    public WebAdministratorService(IGenericRepository<WebAdministrator> adminRepository, IMapper mapper)
     {
-        _PruebaRepository = pruebaRepository;
+        _adminRepository = adminRepository;
         _mapper = mapper;
     }
 
     async Task<List<AdministratorDTO>> IWebAdministratorService.List()
     {
-        var listaCategorias = await _PruebaRepository.Find();
+        var listAdministrators = await _adminRepository.Find();
 
 
-        return _mapper.Map<List<AdministratorDTO>>(listaCategorias.ToList());
+        return _mapper.Map<List<AdministratorDTO>>(listAdministrators.ToList());
     }
 
-    async Task<AdministratorDTO> IWebAdministratorService.Create(AdministratorDTO modelo)
+    async Task<AdministratorDTO> IWebAdministratorService.Create(AdministratorDTO model)
     {
-        var adminModel = _mapper.Map<WebAdministrator>(modelo);
-        adminModel.Password = PasswordHelper.HashPassword(modelo.Password);
-        adminModel.Email = modelo.Email;
-        adminModel.Name = modelo.Name;
+        var adminModel = _mapper.Map<WebAdministrator>(model);
+        adminModel.Password = PasswordHelper.HashPassword(model.Password);
+        adminModel.Email = model.Email;
+        adminModel.Name = model.Name;
 
-        var productoCreado = await _PruebaRepository.Create(adminModel);
-        if (productoCreado.IdAdministrator == 0)
-            throw new TaskCanceledException("The administrator doesn't create");
+        var createdAdmin = await _adminRepository.Create(adminModel);
+        if (createdAdmin.IdAdministrator == 0)
+            throw new TaskCanceledException("No se pudo crear al administrador");
 
-        return _mapper.Map<AdministratorDTO>(productoCreado);
+        return _mapper.Map<AdministratorDTO>(createdAdmin);
     }
 
-    async Task<bool> IWebAdministratorService.Edit(AdministratorDTO modelo)
+    async Task<bool> IWebAdministratorService.Edit(AdministratorDTO model)
     {
-        var productoModelo = _mapper.Map<WebAdministrator>(modelo);
+        var adminModel = _mapper.Map<WebAdministrator>(model);
 
-        var productoEncontraro =
-            await _PruebaRepository.Obtain(u => u.IdAdministrator == productoModelo.IdAdministrator);
-        if (productoEncontraro == null) throw new TaskCanceledException("The administrator doesn't exist");
-        productoEncontraro.Name = productoModelo.Name;
-        productoEncontraro.Email = productoModelo.Email;
-        productoEncontraro.Password = productoModelo.Password;
+        var adminFound =
+            await _adminRepository.Obtain(u => u.IdAdministrator == adminModel.IdAdministrator);
+        if (adminFound == null) throw new TaskCanceledException("El administrador no existe");
+        adminFound.Name = adminModel.Name;
+        adminFound.Email = adminModel.Email;
+        adminFound.Password = adminModel.Password;
 
-
-        var answer = await _PruebaRepository.Edit(productoEncontraro);
+        var answer = await _adminRepository.Edit(adminFound);
 
         if (!answer) throw new TaskCanceledException("The administrator doesn't edit");
         return answer;
     }
 
-
     async Task<bool> IWebAdministratorService.Delete(int id)
     {
-        var productoEncontrado = await _PruebaRepository.Obtain(p => p.IdAdministrator == id);
+        var foundAdmin = await _adminRepository.Obtain(p => p.IdAdministrator == id);
 
-        if (productoEncontrado == null) throw new TaskCanceledException("The administrator doesn't exist");
+        if (foundAdmin == null) throw new TaskCanceledException("El administrador no existe");
 
-        var answer = await _PruebaRepository.Delete(productoEncontrado);
-        if (!answer) throw new TaskCanceledException("The administrator doesn't delete");
+        var answer = await _adminRepository.Delete(foundAdmin);
+        if (!answer) throw new TaskCanceledException("El administrador no pudo ser eliminado");
 
         return answer;
-    }
-
-    private byte[] EncryptPassword(string password)
-    {
-        // Generate a salt and hash the password
-        var salt = BCrypt.Net.BCrypt.GenerateSalt();
-        var hash = BCrypt.Net.BCrypt.HashPassword(password, salt);
-
-        // Convert the hash to byte array
-        return Encoding.UTF8.GetBytes(hash);
     }
 }

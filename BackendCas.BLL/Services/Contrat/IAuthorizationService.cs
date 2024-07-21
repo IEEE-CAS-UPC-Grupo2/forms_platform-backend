@@ -5,5 +5,5 @@ namespace BackendCas.BLL.Services.Contrat;
 public interface IAuthorizationService
 {
     Task<AuthorizationResponse> ObtainToken(AuthorizationRequest autorizacion);
-    Task<AuthorizationResponse> ObtainRefreshOken(RefreshTokenRequest refreshTokenRequest, int idUsuario);
+    Task<AuthorizationResponse> ObtainRefreshToken(RefreshTokenRequest refreshTokenRequest, int idAdministrator);
 }
