@@ -17,22 +17,22 @@ public class PlatformEventService : IPlatformEventService
         _mapper = mapper;
     }
 
-    async Task<List<WebEventDTO>> IPlatformEventService.List()
+    async Task<List<PlatformEventDTO>> IPlatformEventService.List()
     {
         var listEvents = await _eventRepository.Find();
 
 
-        return _mapper.Map<List<WebEventDTO>>(listEvents.ToList());
+        return _mapper.Map<List<PlatformEventDTO>>(listEvents.ToList());
     }
 
-    async Task<WebEventDTO> IPlatformEventService.GetById(int id)
+    async Task<PlatformEventDTO> IPlatformEventService.GetById(int id)
     {
         try
         {
             var events = await _eventRepository.Obtain(c => c.IdEvent == id);
             if (events == null) throw new KeyNotFoundException("El evento no existe");
 
-            return _mapper.Map<WebEventDTO>(events);
+            return _mapper.Map<PlatformEventDTO>(events);
         }
         catch (Exception e)
         {
@@ -41,14 +41,14 @@ public class PlatformEventService : IPlatformEventService
         }
     }
 
-    async Task<WebEventDTO> IPlatformEventService.Create(WebEventDTO modelo)
+    async Task<PlatformEventDTO> IPlatformEventService.Create(PlatformEventDTO modelo)
     {
         var createEvent = await _eventRepository.Create(_mapper.Map<PlatformEvent>(modelo));
         if (createEvent.IdEvent == 0) throw new TaskCanceledException("El evento no pudo ser creado");
-        return _mapper.Map<WebEventDTO>(createEvent);
+        return _mapper.Map<PlatformEventDTO>(createEvent);
     }
 
-    async Task<bool> IPlatformEventService.Edit(WebEventDTO modelo)
+    async Task<bool> IPlatformEventService.Edit(PlatformEventDTO modelo)
     {
         var eventModel = _mapper.Map<PlatformEvent>(modelo);
 

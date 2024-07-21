@@ -17,7 +17,7 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.Password, opt => opt.MapFrom(src => Encoding.UTF8.GetString(src.Password)));
 
 
-        CreateMap<PlatformEvent, WebEventDTO>()
+        CreateMap<PlatformEvent, PlatformEventDTO>()
             .ForMember(dest => dest.EventDateAndTime, opt => opt.MapFrom(src =>
                 FormatDateTime(src.EventDateAndTime)))
             .ReverseMap()

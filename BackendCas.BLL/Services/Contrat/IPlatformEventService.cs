@@ -4,13 +4,13 @@ namespace BackendCas.BLL.Services.Contrat;
 
 public interface IPlatformEventService
 {
-    Task<List<WebEventDTO>> List();
+    Task<List<PlatformEventDTO>> List();
 
-    Task<WebEventDTO> GetById(int id);
+    Task<PlatformEventDTO> GetById(int id);
 
-    Task<WebEventDTO> Create(WebEventDTO model);
+    Task<PlatformEventDTO> Create(PlatformEventDTO model);
 
-    Task<bool> Edit(WebEventDTO model);
+    Task<bool> Edit(PlatformEventDTO model);
 
     Task<bool> Delete(int id);
 }

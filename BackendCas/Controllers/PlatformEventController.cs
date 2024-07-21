@@ -21,7 +21,7 @@ public class PlatformEventController : ControllerBase
     [Route("List")]
     public async Task<IActionResult> List()
     {
-        var rsp = new Response<List<WebEventDTO>>();
+        var rsp = new Response<List<PlatformEventDTO>>();
 
         try
         {
@@ -41,7 +41,7 @@ public class PlatformEventController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var rsp = new Response<WebEventDTO>();
+        var rsp = new Response<PlatformEventDTO>();
 
         try
         {
@@ -67,9 +67,9 @@ public class PlatformEventController : ControllerBase
     [Authorize]
     [HttpPost]
     [Route("Save")]
-    public async Task<IActionResult> Save([FromBody] WebEventDTO producto)
+    public async Task<IActionResult> Save([FromBody] PlatformEventDTO producto)
     {
-        var rsp = new Response<WebEventDTO>();
+        var rsp = new Response<PlatformEventDTO>();
         try
         {
             rsp.status = true;
@@ -88,7 +88,7 @@ public class PlatformEventController : ControllerBase
     [Authorize]
     [HttpPut]
     [Route("Edit")]
-    public async Task<IActionResult> Edit([FromBody] WebEventDTO producto)
+    public async Task<IActionResult> Edit([FromBody] PlatformEventDTO producto)
     {
         var rsp = new Response<bool>();
         try
