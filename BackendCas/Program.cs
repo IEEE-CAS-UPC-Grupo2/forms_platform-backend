@@ -1,4 +1,5 @@
 using System.Text;
+using BackendCas.DAL.DBContext;
 using BackendCas.IOC;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -41,8 +42,9 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 // Add DbContext using the connection string from appsettings.json
-builder.Services.AddDbContext<DbContext>(options =>
+builder.Services.AddDbContext<BackendCasContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CnxSql")));
+
 
 builder.Services.InyectionDependencies(builder.Configuration);
 builder.Services.AddCors(options =>

@@ -1,8 +1,11 @@
 ﻿using BackendCas.BLL.Services.Contrat;
+using BackendCas.DAL.DBContext;
 using BackendCas.DTO;
 using BackendCas.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace BackendCas.Controllers;
 
@@ -11,10 +14,12 @@ namespace BackendCas.Controllers;
 public class PlatformEventController : ControllerBase
 {
     private readonly IPlatformEventService _platformEventService;
+    private readonly BackendCasContext _context; // Agrega esta línea para el contexto
 
-    public PlatformEventController(IPlatformEventService platformEventService)
+    public PlatformEventController(IPlatformEventService platformEventService, BackendCasContext context)
     {
         _platformEventService = platformEventService;
+        _context = context; // Inicializa el contexto
     }
 
     [HttpGet]
@@ -114,13 +119,20 @@ public class PlatformEventController : ControllerBase
         var rsp = new Response<bool>();
         try
         {
-            rsp.status = true;
-            rsp.Value = await _platformEventService.Delete(id);
+            // Ejecutar el procedimiento almacenado
+            var result = await _context.Database.ExecuteSqlRawAsync(
+                "EXEC sp_DeleteEvent @IdEvent",
+                new SqlParameter("@IdEvent", id)
+            );
+
+            // Verificar si la eliminación fue exitosa
+            rsp.status = result > 0; // result es un int y se compara con 0 para determinar el estado
+            rsp.Value = rsp.status;
+            rsp.msg = rsp.status ? "Event deleted successfully" : "Event not found or could not be deleted";
         }
         catch (Exception ex)
         {
             rsp.status = false;
-
             rsp.msg = ex.Message;
         }
 

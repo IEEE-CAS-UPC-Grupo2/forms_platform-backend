@@ -70,7 +70,7 @@ public class AuthorizationService : IAuthorizationService
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = claims,
-            Expires = now.AddMinutes(30),
+            Expires = now.AddHours(3),
             NotBefore = now,
             IssuedAt = now,
             SigningCredentials = tokenCredentials
