@@ -63,3 +63,12 @@ CREATE TABLE Participations
     FOREIGN KEY (IdEvent) REFERENCES PlatformEvents (IdEvent)
 );
 GO
+
+CREATE OR ALTER PROCEDURE sp_DeleteEvent
+    @IdEvent INT
+    AS
+BEGIN
+DELETE FROM Participations WHERE IdEvent = @IdEvent;
+DELETE FROM PlatformEvents WHERE IdEvent = @IdEvent;
+END;
+GO
