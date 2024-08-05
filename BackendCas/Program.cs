@@ -41,9 +41,25 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+var connectionString = builder.Configuration.GetConnectionString("CnxSql");
+try
+{
+    var optionsBuilder = new DbContextOptionsBuilder<BackendCasContext>();
+    optionsBuilder.UseSqlServer(connectionString);
+    using (var context = new BackendCasContext(optionsBuilder.Options))
+    {
+        context.Database.OpenConnection();
+        context.Database.CloseConnection();
+    }
+}
+catch
+{
+    connectionString = builder.Configuration.GetConnectionString("DockerSql");
+}
+
 // Add DbContext using the connection string from appsettings.json
 builder.Services.AddDbContext<BackendCasContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("CnxSql")));
+    options.UseSqlServer(connectionString));
 
 
 builder.Services.InyectionDependencies(builder.Configuration);
